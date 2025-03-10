@@ -1,0 +1,26 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+:root {
+    --green-primary: #1C4A2A;
+}
+body{
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+    flex-direction: column;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 500;
+    position: relative;
+}
+.main{
+    width: 100vw;
+    display: flex;
+    flex-grow: 1;
+    height: 100vh;
+    background: var(--green-primary);
+}

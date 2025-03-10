@@ -1,0 +1,39 @@
+:root {
+    --green-primary: #1C4A2A;
+}
+.title_container{
+    width: 50%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 180%;
+    letter-spacing: -1%;
+    vertical-align: middle;
+    color: white;
+    padding: 70px;
+}
+.hero_image_container{
+    width: 50%;
+    height:100%;
+    position: relative;
+}
+
+.title{
+font-weight: 500;
+font-size: 60px;
+line-height: 150%;
+letter-spacing: -1%;
+}
+.start_btn{
+    width: 199;
+    height: 62;
+    margin: 16px 0;
+    border-radius: 10px;
+    padding: 20px 48px;
+    background-color: white;
+    border: none;
+    color: var(--green-primary);
+    cursor: pointer;
+}
