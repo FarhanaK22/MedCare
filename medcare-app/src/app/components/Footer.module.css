@@ -1,0 +1,14 @@
+.footer{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #8C8C8C;
+    background-color: #FFFFFF;
+    height: 70px;
+    padding: 0 40px;
+    border-top : 1px solid #DEDEDE;
+}
+.foot_icon{
+    margin-left: 10px;
+}

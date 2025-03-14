@@ -1,0 +1,73 @@
+[
+    {
+      "user_id": 1,
+      "name": "Alice Johnson",
+      "email": "alice.johnson@example.com",
+      "password": "$2a$10$5d7f89u1pL2r.zTmZk1Oee",
+      "created_at": "2025-03-14T10:00:00Z"
+    },
+    {
+      "user_id": 2,
+      "name": "Bob Smith",
+      "email": "bob.smith@example.com",
+      "password": "$2a$10$QwL9mF8xJhAB3oF7gPbNSe",
+      "created_at": "2025-03-14T10:15:00Z"
+    },
+    {
+      "user_id": 3,
+      "name": "Charlie Davis",
+      "email": "charlie.davis@example.com",
+      "password": "$2a$10$ZrQh8kVl6G5Ewz3UMt/ihm",
+      "created_at": "2025-03-14T10:30:00Z"
+    },
+    {
+      "user_id": 4,
+      "name": "Diana Miller",
+      "email": "diana.miller@example.com",
+      "password": "$2a$10$1aFh8q7LmYt3KwW5ZpROQy",
+      "created_at": "2025-03-14T10:45:00Z"
+    },
+    {
+      "user_id": 5,
+      "name": "Ethan Wilson",
+      "email": "ethan.wilson@example.com",
+      "password": "$2a$10$8kRmQfN6K/xYtLd1mPqKOu",
+      "created_at": "2025-03-14T11:00:00Z"
+    },
+    {
+      "user_id": 6,
+      "name": "Fiona Brown",
+      "email": "fiona.brown@example.com",
+      "password": "$2a$10$ZlmAqX8gYtPbKwQ6Z4ROX1",
+      "created_at": "2025-03-14T11:15:00Z"
+    },
+    {
+      "user_id": 7,
+      "name": "George Clark",
+      "email": "george.clark@example.com",
+      "password": "$2a$10$Yt3LKwZ5mN8pXfqOqR6K1R",
+      "created_at": "2025-03-14T11:30:00Z"
+    },
+    {
+      "user_id": 8,
+      "name": "Hannah White",
+      "email": "hannah.white@example.com",
+      "password": "$2a$10$XqLm8N7W5Yt1ROZ6pKfOQ4",
+      "created_at": "2025-03-14T11:45:00Z"
+    },
+    {
+      "user_id": 9,
+      "name": "Ian Anderson",
+      "email": "ian.anderson@example.com",
+      "password": "$2a$10$Oq7LKwYt3mN8X5fZ6pRQ1K",
+      "created_at": "2025-03-14T12:00:00Z"
+    },
+    {
+      "user_id": 10,
+      "name": "Jessica Thomas",
+      "email": "jessica.thomas@example.com",
+      "password": "$2a$10$Z6pX5mN8Yt3LKwOq7fRQ1K",
+      "created_at": "2025-03-14T12:15:00Z"
+    }
+  ]
+  

@@ -1,0 +1,87 @@
+[
+    {
+      "slot_id": 1,
+      "start_time": "09:00",
+      "end_time": "09:30",
+      "session": "Morning"
+    },
+    {
+      "slot_id": 2,
+      "start_time": "09:30",
+      "end_time": "10:00",
+      "session": "Morning"
+    },
+    {
+      "slot_id": 3,
+      "start_time": "10:00",
+      "end_time": "10:30",
+      "session": "Morning"
+    },
+    {
+      "slot_id": 4,
+      "start_time": "10:30",
+      "end_time": "11:00",
+      "session": "Morning"
+    },
+    {
+      "slot_id": 5,
+      "start_time": "11:00",
+      "end_time": "11:30",
+      "session": "Morning"
+    },
+    {
+      "slot_id": 6,
+      "start_time": "11:30",
+      "end_time": "12:00",
+      "session": "Morning"
+    },
+    {
+      "slot_id": 7,
+      "start_time": "12:00",
+      "end_time": "12:30",
+      "session": "Morning"
+    },
+    {
+      "slot_id": 8,
+      "start_time": "15:00",
+      "end_time": "15:30",
+      "session": "Evening"
+    },
+    {
+      "slot_id": 9,
+      "start_time": "15:30",
+      "end_time": "16:00",
+      "session": "Evening"
+    },
+    {
+      "slot_id": 10,
+      "start_time": "16:00",
+      "end_time": "16:30",
+      "session": "Evening"
+    },
+    {
+      "slot_id": 11,
+      "start_time": "16:30",
+      "end_time": "17:00",
+      "session": "Evening"
+    },
+    {
+      "slot_id": 12,
+      "start_time": "17:00",
+      "end_time": "17:30",
+      "session": "Evening"
+    },
+    {
+      "slot_id": 13,
+      "start_time": "17:30",
+      "end_time": "18:00",
+      "session": "Evening"
+    },
+    {
+      "slot_id": 14,
+      "start_time": "18:00",
+      "end_time": "18:30",
+      "session": "Evening"
+    }
+  ]
+  
