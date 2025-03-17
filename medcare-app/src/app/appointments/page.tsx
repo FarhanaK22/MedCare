@@ -1,56 +1,58 @@
+"use client"
 import React from "react";
 import styles from "./appointments.module.css"
 import Search from "./search";
 import Slot from "./slot";
+import Filter from "./filter";
+import Card from "./cards";
+import { useState } from "react";
 // import { useState, useEffect } from 'react';
 
 export default function Appointments()
 {
-//   const [results, setResults] = useState([]);
-//   const [data, setData] = useState([]);
-//   useEffect(() => {
-//     // useEffect(() => {
-//     //     const fetchData = async () => {
-//     //       const response = await fetch('/api/data'); // Your API endpoint
-//     //       const allData = await response.json();
-//     //       setData(allData);
-//     //     };
-//     //      fetchData();
-//     //   }, []);
-//     // Fetch all the data you want to be searchable
-//     // This could be from an API, static files, etc.
-//     // For simplicity, we'll use static data here
-//     const fetchData = async () => {
-//       const allData = [
-//         { id: 1, title: 'Next.js Tutorial', content: 'Learn how to use Next.js' },
-//         { id: 2, title: 'React.js Guide', content: 'A comprehensive guide to React.js' },
-//         { id: 3, title: 'JavaScript Basics', content: 'Learn the basics of JavaScript' },
-//         { id: 4, title: 'Advanced Node.js', content: 'Master Node.js with advanced concepts' }
-//       ];
-//       setData(allData);
-//     };
-//     fetchData();
-//   }, []);
-//   const handleSearch = (query) => {
-//     const filteredResults = data.filter(item =>
-//       item.title.toLowerCase().includes(query.toLowerCase()) ||
-//       item.content.toLowerCase().includes(query.toLowerCase())
-//     );
-//     setResults(filteredResults);
-//   };
+  // const [results, setResults] = useState([]);
+  // const [data, setData] = useState([]);
+
+  // useEffect(() => {
+  //     const fetchData = async () => {
+  //       const response = await fetch('/api/data'); // Your API endpoint
+  //       const allData = await response.json();
+  //       setData(allData);
+  //     };
+  //       fetchData();
+  //   }, []);
+
+  // const handleSearch = (query) => {
+  //   const filteredResults = data.filter(item =>
+  //     item.title.toLowerCase().includes(query.toLowerCase()) ||
+  //     item.content.toLowerCase().includes(query.toLowerCase())
+  //   );
+  //   setResults(filteredResults);
+  // };
+  const [filter,setFilter] = useState(false)
+
+  const handleFilter =  ()=>setFilter(!filter)
+
   return (
     <div>
-    {/* //   <h1>My Next.js Site</h1>
-    //   <Search onSearch={handleSearch} />
-    //   <ul>
-    //     // {results.map(result => (
-    //     //   <li key={result.id}>
-    //     //     <h2>{result.title}</h2>
-    //     //     <p>{result.content}</p>
-    //     //   </li>
-    //     // ))}
-    //   </ul> */}
-    {/* <Search/> */}
+    <div className={styles.result}>
+      {/* <Search />
+
+      <h1 className={styles.head}>6 doctors available</h1>
+      <p>Book appointments with minimum wait-time & verified doctor details</p>
+      <div className={styles.doctors}>
+        <Filter handleFilter={handleFilter} filter={filter}/>
+        <div className={styles.cards}>
+          <Card/>
+          <Card/>
+          <Card/>
+          <Card/>
+          <Card/>
+          <Card/>
+          <Card/>
+        </div>
+      </div> */}
+      </div>
     <Slot/>
     </div>
   );

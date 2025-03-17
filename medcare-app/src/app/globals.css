@@ -5,6 +5,7 @@
 }
 :root {
     --green-primary: #1C4A2A;
+    --muted-text: #8C8C8C;
 }
 body{
     min-height: 100vh;
@@ -17,11 +18,21 @@ body{
     letter-spacing: -0.16px;
     background: var(--green-primary);
 }
-
+input:focus{
+    outline: 2px solid white;
+}
+button:hover{
+    outline: 2px solid rgb(241, 248, 148);
+}
+select:focus{
+    outline: none;
+}
 /* .main{
-    background: var(--green-primary);
-    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    height: 100%;
 } */
 #eye{
     position: absolute;

@@ -1,0 +1,23 @@
+.emergency_div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    width: 80%;
+    margin: 2rem auto;
+    color: var(--green-primary);
+}
+.emergency_div button{
+    border: none;
+    background-color: var(--green-primary);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+.emergency_div p{
+    font-size: 1.5rem;
+}

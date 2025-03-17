@@ -1,0 +1,87 @@
+.dates_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    gap: 10px;
+    position: relative;
+}
+.date{
+    display: flex;
+    gap:5px;
+}
+.dates,.month{
+    display: flex;
+    gap: 20px;
+    width: 90%;
+    justify-content: center;
+    align-items: center;
+    color: #313131;
+    
+}
+.month{
+    font-weight: 700;
+}
+.dates{
+    justify-content: flex-start;
+    position: relative;
+    gap:10px;
+    overflow: hidden;
+    
+}
+.right_date{
+    position: absolute;
+    right: 10px;
+    background-color: white;
+}
+.date_btn{
+    border: 1px solid #C9C9C9;
+    border-radius: 5px;
+    color: #313131;
+    background-color: transparent;
+    padding: 3px 8px;
+    
+}
+.selected_btn{
+    background-color: var(--green-primary);
+    color: white;
+    border: none;
+}
+
+
+/* ..... times styles-------------- */
+
+.session{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    box-shadow: 0px 2px 11px 0px #00000019;
+  padding-bottom: 10px;
+}
+.session_head{
+    padding: 10px 0;
+    margin: 1rem;
+    display: flex;
+    border-bottom: 1px solid #70707026;
+    justify-content: space-between;
+}
+.session_name{
+    display: flex;
+}
+.times{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap:5px;
+}
+.slot_btn{
+    border-radius: 5px;
+    width: 22%;
+    padding: 5px 5px;
+    color:black;
+    border:1px solid slot_btn;
+    background-color: transparent;
+}

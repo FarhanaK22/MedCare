@@ -1,3 +1,4 @@
+"use client"
 import React from "react"
 import phone from "../../../public/images/Phone1.png"
 import whatsapp from "../../../public/images/WhatsApp.png"

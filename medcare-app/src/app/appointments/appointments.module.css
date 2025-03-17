@@ -6,6 +6,7 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0px 3px 15px 0px #0000001A;
+    margin-bottom: 35px;
 
 }
 .search_form{
@@ -35,7 +36,7 @@
 }
 .search_input{
     padding: 5px;
-    width: 50%;
+    width: 100%;
     border: none;
     color: #AFAFAF;
 }
@@ -67,10 +68,20 @@
     display: flex;
 }
 .checkup_image_container{
+    background-image: url(../assets/checkup.png);
+    background-size:     cover;                      /* <------ */
+    background-repeat:   no-repeat;
+    background-position: center center;   
     width: 50%;
-    height: 100%;
+    /* height: 100%;
+    height:100%;  */
+    min-height: 88vh;
     position: absolute;
     right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
 }
 
 .title{
@@ -87,23 +98,270 @@ letter-spacing: -1%;
     }
 }
 @media screen and  (max-width:469px){
+    .slot_div{
+        width: 100%;
+        min-height: 88vh;
+    flex-direction: column;
+    background-color: var(--green-primary);
+position: static;}
     .title_container{
         width: 100%;
+        min-height: 500px;
+        text-align: center;
         padding: 10px;
-        backdrop-filter: blur(3px); 
-        color: var(--green-primary);
         font-weight: 600;
         text-shadow: -1px -1px 3px white;
+        position: static;
     }
     .checkup_image_container{
-        display: none;}
-    .slot_div{
-        min-height: 85vh;
-        flex-direction: column-reverse;
         position: static;
-        background-image: url(../assets/checkup.png);
-        background-size:     cover;                      /* <------ */
-        background-repeat:   no-repeat;
-        background-position: center center;   
+        width: 100%;
+        padding: 10px;
+       }
+
+}
+
+.doctors{
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    padding: 10px;
+}
+.result{
+    color:#8C8C8C;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+    /* padding-top: 60px; */
+    text-align: center;
+}
+.head{
+    color: #0E2515;
+    font-size: 40px;
+    font-weight: 500;
+}
+/* 
+--------------- Filter Styles ---------------- */
+.filter_div{
+    background-color: white;
+    width: 20%;
+    color: black;
+}
+.filter{
+    width: 90%;
+    margin:10px auto;
+    display: flex;
+    justify-content: space-between;
+}
+.field{
+    margin:0 auto;
+    margin-bottom: 10px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    border: 1px solid #E0E8E0;
+    border-radius: 16px;
+    background-color: #FBFBFB;
+}
+.radio{
+ display: flex;
+ gap: 5px;
+}
+.reset{
+    border: none;
+    background-color: transparent;
+    color: var(--green-primary);
+}
+.toggle_filter , .toggle_filter_save{
+    display:none;
+}
+/* ------------------- Card style ---------------- */
+.cards{
+    width: 80%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    align-content: center;
+    flex-wrap: wrap;
+    background-color: white;
+    gap: 10px;
+}
+.name{
+    font-size: 22px;
+    font-weight: 500;
+    color:#0E2515;
+}
+.card{
+    color: #8C8C8C;
+    text-align: center;
+    width: 30%;
+    border: 1px solid #E0E8E0;
+    background-color: #F8FCF9;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding:20px 0;
+    gap: 15px;
+}
+.detail{
+    width:60%;
+    display: flex;
+    justify-content: space-between;
+}
+.info{
+    display: flex;
+}
+.cardBtn{
+    border: 1px solid #DEDEDE;
+    background-color: transparent;
+    padding: auto;
+    border-radius: 10px;
+    margin-top: 20px;
+    color:#0E2515;
+    width: 80%;
+    height: 60px;
+}
+
+@media screen  and (min-width:768px) and (max-width:1000px){
+    .filter_div{
+        width: 30%;}
+        .cards{
+            width: 70%;
+        }
+        .card{
+            width: 45%;}
+}
+@media screen  and (max-width:767px) {
+    .doctors{
+        flex-direction: column;
     }
+    .cards{
+        width: 100%;}
+    .card{
+       width:  55%;
+    }
+    .filter_div{
+        width: 90%;
+        position: relative;
+    }
+    .form{
+        display: none;
+    }
+    .form.open{
+        position: absolute;
+        display: block;
+        top:0;
+        right:0;
+        width: 60%;    
+        background-color: white;
+        box-shadow: 0px 3px 15px 0px #0000001A;
+        border-radius: 16px;
+    }
+    .toggle_filter{
+        position: absolute;
+        right: 0;
+        top:-20px;
+        text-align: center;
+        display: block;
+        border: none;
+        background-color: var(--green-primary);
+        padding: 5px 8px;
+        color: white;
+        border-radius: 8px;
+    }
+    .toggle_filter_save{
+        display: block;
+        position: absolute;
+        background-color: var(--green-primary);
+        padding: 5px 8px;
+        color: white;
+        border-radius: 8px;
+        bottom: 0;
+        right: 0;
+    }
+}
+@media screen  and (max-width:480px)
+{
+    .card{
+        width: 80%;
+    }
+    .form.open{
+        width: 80%;
+    }
+}
+
+/* --------------Booking styles---------- */
+
+.booking{
+    margin: 20px auto;
+    background-color: white;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap:10px;
+    padding: 1rem 0;
+}
+.booking_head_p{
+    color: #221E20;
+    font-weight: 400;
+    font-size: 22px;
+}
+.appointment_btn{
+    cursor: pointer;
+    color:white;
+    border-radius: 10px;
+    border:none;
+    padding: 8px 16px;
+    background-color: var(--green-primary);
+}
+.booking_head,.booking_type ,.slot_session{
+    display: flex;
+    width: 90%;
+    justify-content: center;
+    align-items: center;
+}
+@media screen and (max-width:600px) {
+.booking_head{
+    flex-direction: column;
+    font-size: 16px;
+}
+}
+
+.bookingtype_online ,.bookingtype_offline{
+    padding: 8px 16px;
+    width: 50%;
+    border: 1px solid #F4D7D0;
+    border-radius: 5px;
+    background-color: transparent;
+}
+.bg_green{
+    color: white;
+    background-color: var(--green-primary);
+}
+.booking_head{
+    justify-content: space-between;
+}
+.location{
+    width: 90%;
+    padding: 10px 16px;
+    border: 1px solid #D3D4DB;
+    border-radius: 5px;
+}
+
+.next_btn{
+    width: 90%;
+    padding: 10px 16px;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    background-color: var(--green-primary);
 }

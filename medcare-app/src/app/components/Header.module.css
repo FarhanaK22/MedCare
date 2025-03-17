@@ -17,7 +17,7 @@
     color: #8C8C8C; 
     margin:0 10px; 
 }
-.link :active{
+.link:active , .link:focus{
     color: var(--green-primary);
 }
 .links{
@@ -48,6 +48,18 @@
 }
 .btn_container{
     display: flex;
+    align-items: center;
+}
+.icon{
+    margin:0 10px;
+    font-size: 1.6rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    /* margin-right: 10px; */
+}
+.btns_div{
+    display: flex;
 }
 .login_btn{
     width: 110;
@@ -71,18 +83,16 @@
     cursor: pointer;
 }
 .menu_toggle {
-    font-size: 34px;
-    font-weight: 600;
+    font-size: 30px;
     text-align: center;
-    border-radius: 5px;
     border: none;
     color:  var(--green-primary);
-    background-color: white;
+    background-color:transparent;
     cursor: pointer;
     display: none;
     margin-right: 20px;
-    position: relative;
-    top:-3px;
+    /* position: relative;
+    top:-3px; */
   }
 
 
@@ -132,13 +142,13 @@
       text-align: center;
       margin: 0;
     }
-  
+
     .link:hover{
         color: white;
         background-color: var(--green-primary);
     }
 }
-@media screen and  (max-width:570px) and (min-width:470px){
+@media screen and  (max-width:620px) and (min-width:500px){
     .header{
         padding: 10px;
         align-content:  center;
@@ -148,9 +158,22 @@
         /* margin-left: 10px; */
         height:36px ;
         padding:10px 0;
+}  .icon{
+    font-size: 1.2rem;
+
+   }
 }
-}
-@media screen and  (max-width:469px){
+@media screen and  (max-width:499px){
+    .medcare{
+        font-size: 24px;}
+    .logo{
+        height: 30px;
+        width: 30px;
+    }
+   .icon{
+    font-size: 1.2rem;
+    margin-right: 8px;
+   }
     .header{
         height: 15vh;
         padding: 10px;
@@ -172,7 +195,7 @@
     .menu_toggle {
         margin-right: 5px;}
         .links{
-            background-color: transparent;
+            background-color: white;
             backdrop-filter: blur(10px); 
             /* box-shadow: none; */
         }
