@@ -63,12 +63,14 @@
 .session_head{
     padding: 10px 0;
     margin: 1rem;
+    font-weight: 700;
     display: flex;
     border-bottom: 1px solid #70707026;
     justify-content: space-between;
 }
 .session_name{
     display: flex;
+    gap:10px;
 }
 .times{
     display: flex;
@@ -81,7 +83,16 @@
     border-radius: 5px;
     width: 22%;
     padding: 5px 5px;
+    font-weight: 600;
+    font-size: 14px;
     color:black;
-    border:1px solid slot_btn;
+    border:1px solid #F4D7D0;
     background-color: transparent;
+}
+.slot_len{
+    border:  1px solid #EDEBFF;
+    background-color: #FAF5FF;
+    border-radius: 10px;
+    font-size: 12px;
+    padding: 3px 8px;
 }

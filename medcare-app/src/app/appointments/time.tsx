@@ -12,7 +12,7 @@ export default function Time()
 
 const [availableSlot,setAvailable] = useState<string[]>([]);
 const [unAvailableSlot,setUnAvailable] = useState<string[]>([]);
-
+const [selectedTime, setSlotTime] = useState<string>('');
 
 // useeffect to call to server
     useEffect(()=>
@@ -20,7 +20,9 @@ const [unAvailableSlot,setUnAvailable] = useState<string[]>([]);
         setAvailable(timeArray)
         setUnAvailable(timeArray)
     },[])
-
+    function handleSlotClick(time : string){
+            setSlotTime(time);
+    }
     return (
         <div>
             <div className={styles.session}>
@@ -29,13 +31,20 @@ const [unAvailableSlot,setUnAvailable] = useState<string[]>([]);
                         <Image src={morning} alt="morning" width={23} height={21} />
                         <p>Morning</p>
                     </div>
-                    <p>{availableSlot.length} slots</p>
+                    <p className={styles.slot_len}>{availableSlot.length} slots</p>
                 </div>
                 <div className={styles.times}>
                     {
                         availableSlot.map((item,index)=>
                        (
-                           <button className={styles.slot_btn}>{item}</button>
+                           <button key={index}
+                           onClick={()=> handleSlotClick(item)}
+                           className ={`${styles.slot_btn}
+                           ${ selectedTime === item ?
+                               styles.selected_btn : ""
+                           }
+                           `} 
+                           >{item}</button>
                        ))
                     }
                 </div>
@@ -46,13 +55,13 @@ const [unAvailableSlot,setUnAvailable] = useState<string[]>([]);
                         <Image src={afternoon} alt="afternoon" width={32} height={21} />
                         <p>Afternoon</p>
                     </div>
-                    <p>{unAvailableSlot.length} slots</p>
+                    <p className={styles.slot_len}>{unAvailableSlot.length} slots</p>
                 </div>
                 <div className={styles.times}>
                     {
                         unAvailableSlot.map((item,index)=>
                        (
-                           <button  className={styles.slot_btn}>{item}</button>
+                           <button  key={index}  className={styles.slot_btn}>{item}</button>
                        ))
                     }
                 </div>

@@ -17,7 +17,6 @@ export default function Slot() {
         </div>
 
         <div className={styles.checkup_image_container}>
-          {/* <Image className={styles.checkup_image} id="checkup-image"  src={checkup} alt="checkup-image"  fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" placeholder = "blur" quality={100} /> */}
           <div className={styles.booking}>
              <div className={styles.booking_head}>
                 <p className={styles.booking_head_p}>Schedule Appointment</p>

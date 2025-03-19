@@ -342,6 +342,12 @@ position: static;}
     border-radius: 5px;
     background-color: transparent;
 }
+.bookingtype_online{
+    border-radius: 5px 0 0 5px;
+}
+.bookingtype_offline{
+    border-radius: 0 5px 5px 0;
+}
 .bg_green{
     color: white;
     background-color: var(--green-primary);
