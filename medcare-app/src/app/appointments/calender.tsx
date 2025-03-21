@@ -11,9 +11,6 @@ interface DateObject {
   month: string; // Full month name (e.g., March)
   year: number; // Year (e.g., 2025)
 }
-
-export default function Calender (){
-
 const generateDateObject = (offset: number = 0): DateObject =>{
     const date = new Date();
     date.setDate(date.getDate() + offset);
@@ -24,6 +21,7 @@ const generateDateObject = (offset: number = 0): DateObject =>{
         month : date.toLocaleDateString('en-US',{month : "long"}),
         year :date.getFullYear(),};
 }
+export default function Calender (){
 
 const [weekDates, setWeekDates] = useState<DateObject[]>([]);
 const [selectedDate, setSelectedDate] = useState<DateObject>(generateDateObject());

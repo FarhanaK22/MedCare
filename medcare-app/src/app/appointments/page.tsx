@@ -36,7 +36,7 @@ export default function Appointments()
   return (
     <div>
     <div className={styles.result}>
-      {/* <Search />
+      {/* <Search /> */}
 
       <h1 className={styles.head}>6 doctors available</h1>
       <p>Book appointments with minimum wait-time & verified doctor details</p>
@@ -51,7 +51,7 @@ export default function Appointments()
           <Card/>
           <Card/>
         </div>
-      </div> */}
+      </div>
       </div>
     <Slot/>
     </div>
