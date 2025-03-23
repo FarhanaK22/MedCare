@@ -1,0 +1,134 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body{
+  min-height: 100vh;
+  width: 100%;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-align: center;
+}
+.main{
+ width: 100vw;
+ /* display: flex;
+ padding-top: 30px; */
+}
+.login-container{
+     margin: auto;
+      border: 2px solid pink;
+      border-radius: 16px;
+      padding: 10px ;
+      width: 300px;
+      margin-top: 40px;
+}
+.login-form {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  flex-direction: column;
+}
+.login-btn{
+  background-color: rgb(29, 146, 29);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+}
+.login-btn:hover {
+  cursor: pointer;
+ background-color: rgb(9, 119, 119);
+}
+.login-form input {
+  padding: 5px 10px;
+  border-radius: 10px;
+}
+.dashboard{
+ margin: 0 10px;
+}
+.appointments {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  border: 2px solid pink;
+  padding: 10px;
+  height: 250px;
+  overflow-y: scroll;
+  margin: 10px 0;
+}
+.appointments-table{
+  border-collapse: collapse; 
+  border-spacing: 0; 
+}
+.appointments-table th{
+  background-color: rgb(198, 161, 233);
+  padding: 5px;
+  margin: 0;
+  border: 1px solid black;
+}
+.appointments-table tr{
+  border: 1px solid black;
+}
+.appointments-table td {
+  border: 1px solid black;
+}
+.approve-btn{
+  background-color:greenyellow;
+  padding: 5px;
+  cursor: pointer;
+  margin:  5px ;
+  border: none;
+  border-radius: 5px;
+}
+.reject-btn{
+  background-color: rgb(245, 49, 49);
+  padding: 5px;
+  cursor: pointer;
+  margin:  5px ;
+  border: none;
+  border-radius: 5px;
+}
+.reject-btn:hover, .approve-btn:hover{
+   background-color:aquamarine
+}
+.crud{
+  border: 2px solid pink;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+}
+.crud form {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  width: 100%;
+  border-bottom:2px solid pink;
+  padding-bottom: 5px;
+}
+.crud input{
+  padding: 5px;
+}
+.crud button{
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  margin: 5px;
+  cursor: pointer;
+  width: 100px;
+}
+button:hover{  
+    background-color: blueviolet !important ;
+    color: white;
+    outline: 2px solid rgb(212, 202, 202);
+}
+
+p{
+  font-weight: 600;
+  color: rgb(71, 66, 66);
+}
