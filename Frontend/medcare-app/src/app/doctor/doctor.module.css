@@ -1,0 +1,71 @@
+
+.name{
+    font-size: 22px;
+    font-weight: 500;
+    color:#0E2515;
+}
+.doctor_container{
+    color: #464242;
+    font-weight: 600;
+    text-align: center;
+    width: 60%;
+    border: 1px solid #E0E8E0;
+    background-color: #F8FCF9;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding:20px 0;
+    gap: 15px;
+    margin:20px auto;
+    position: relative;
+}
+.info{
+    width:90%;
+    gap:1rem;
+    display: flex;
+    flex-direction: column;
+}
+.info span{
+    color: #0E2515;
+}
+.cardBtn{
+    border: 1px solid #DEDEDE;
+    background-color: transparent;
+    padding: auto;
+    border-radius: 10px;
+    width: 150px;
+    height: 50px;
+    background-color:#1C4A2A;
+    color: white;
+    cursor: pointer;
+}
+.btns{
+    display: flex;
+    width: 100%;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.review{
+    position: absolute;
+    bottom : 50%;
+    background-color: white;
+    border: 2px solid #1C4A2A;
+    padding: 40px 20px;
+    border-radius: 10px;
+    line-height: 3;
+}
+.reviewBtn{
+    width: 100px;
+    padding: 5px 8px;
+    background-color:#1C4A2A;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+.review input{
+    border: none;
+    padding: 10px;
+}

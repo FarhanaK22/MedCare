@@ -5,9 +5,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    gap: 16px;
     box-shadow: 0px 3px 15px 0px #0000001A;
     margin-bottom: 35px;
 
+}
+.find_doc{
+    color: #0E2515;
+    font-weight: 500;
+    font-size: 1.5rem;
 }
 .search_form{
     width: 90%;
@@ -66,6 +73,16 @@
     font-size: 40px;
     font-weight: 500;
 }
+.pagination{
+    display: flex;
+    gap:1rem;
+    padding: 10px;
+}
+.pagination button{
+    color: #1C4A2A;
+    border: none;
+    background-color: transparent;
+}
 /* 
 --------------- Filter Styles ---------------- */
 .filter_div{
@@ -107,9 +124,9 @@
 .cards{
     width: 80%;
     display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    align-content: center;
+    justify-content:flex-start;
+    align-items: flex-start;
+    /* align-content: center; */
     flex-wrap: wrap;
     background-color: white;
     gap: 10px;

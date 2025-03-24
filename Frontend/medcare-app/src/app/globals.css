@@ -21,9 +21,9 @@ body{
 input:focus{
     outline: 2px solid white;
 }
-button:hover{
+/* button:hover{
     outline: 2px solid rgb(241, 248, 148);
-}
+} */
 select:focus{
     outline: none;
 }
