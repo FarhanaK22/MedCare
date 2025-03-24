@@ -1,0 +1,254 @@
+.dates_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    gap: 10px;
+    position: relative;
+}
+.date{
+    display: flex;
+    gap:5px;
+}
+.dates,.month{
+    display: flex;
+    gap: 20px;
+    width: 90%;
+    justify-content: center;
+    align-items: center;
+    color: #313131;
+    
+}
+.month{
+    font-weight: 700;
+}
+.dates{
+    justify-content: flex-start;
+    position: relative;
+    gap:10px;
+    overflow: hidden;
+    
+}
+.right_date{
+    position: absolute;
+    right: 10px;
+    background-color: white;
+}
+.date_btn{
+    border: 1px solid #C9C9C9;
+    border-radius: 5px;
+    color: #313131;
+    background-color: transparent;
+    padding: 3px 8px;
+    
+}
+.selected_btn{
+    background-color: var(--green-primary);
+    color: white;
+    border: none;
+}
+
+
+/* ..... times styles-------------- */
+
+.session{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    box-shadow: 0px 2px 11px 0px #00000019;
+  padding-bottom: 10px;
+}
+.session_head{
+    padding: 10px 0;
+    margin: 1rem;
+    font-weight: 700;
+    display: flex;
+    border-bottom: 1px solid #70707026;
+    justify-content: space-between;
+}
+.session_name{
+    display: flex;
+    gap:10px;
+}
+.times{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap:5px;
+}
+.slot_btn{
+    border-radius: 5px;
+    width: 22%;
+    padding: 5px 5px;
+    font-weight: 600;
+    font-size: 14px;
+    color:black;
+    border:1px solid #F4D7D0;
+    background-color: transparent;
+}
+.slot_len{
+    border:  1px solid #EDEBFF;
+    background-color: #FAF5FF;
+    border-radius: 10px;
+    font-size: 12px;
+    padding: 3px 8px;
+}
+
+/* ..///... */
+
+
+/* ----------------Slots Styles ------------------ */
+
+.title_container{
+    width: 50%;
+    height:100%;
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    line-height: 180%;
+    color: white;
+    padding: 60px;
+}
+
+.slot_div{
+    width: 100%;
+    min-height: 88vh;
+    height: 100%;
+    position: relative;
+    display: flex;
+}
+.checkup_image_container{
+    background-image: url(../assets/checkup.png);
+    background-size:     cover;                      /* <------ */
+    background-repeat:   no-repeat;
+    background-position: center center;   
+    width: 50%;
+    /* height: 100%;
+    height:100%;  */
+    min-height: 88vh;
+    position: absolute;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.title{
+font-weight: 50;
+font-size: 60px;
+line-height: 150%;
+letter-spacing: -1%;
+}
+
+
+@media screen and  (max-width:570px) and (min-width:470px){
+    .title_container{
+            padding: 10px;
+    }
+}
+@media screen and  (max-width:469px){
+    .slot_div{
+        width: 100%;
+        min-height: 88vh;
+    flex-direction: column;
+    background-color: var(--green-primary);
+position: static;}
+    .title_container{
+        width: 100%;
+        min-height: 500px;
+        text-align: center;
+        padding: 10px;
+        font-weight: 600;
+        text-shadow: -1px -1px 3px white;
+        position: static;
+    }
+    .checkup_image_container{
+        position: static;
+        width: 100%;
+        padding: 10px;
+       }
+
+}
+
+/* --------------Booking styles---------- */
+
+.booking{
+    margin: 20px auto;
+    background-color: white;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap:10px;
+    padding: 1rem 0;
+}
+.booking_head_p{
+    color: #221E20;
+    font-weight: 400;
+    font-size: 22px;
+}
+.appointment_btn{
+    cursor: pointer;
+    color:white;
+    border-radius: 10px;
+    border:none;
+    padding: 8px 16px;
+    background-color: var(--green-primary);
+}
+.booking_head,.booking_type ,.slot_session{
+    display: flex;
+    width: 90%;
+    justify-content: center;
+    align-items: center;
+}
+@media screen and (max-width:600px) {
+.booking_head{
+    flex-direction: column;
+    font-size: 16px;
+}
+}
+
+.bookingtype_online ,.bookingtype_offline{
+    padding: 8px 16px;
+    width: 50%;
+    border: 1px solid #F4D7D0;
+    border-radius: 5px;
+    background-color: transparent;
+}
+.bookingtype_online{
+    border-radius: 5px 0 0 5px;
+}
+.bookingtype_offline{
+    border-radius: 0 5px 5px 0;
+}
+.bg_green{
+    color: white;
+    background-color: var(--green-primary);
+}
+.booking_head{
+    justify-content: space-between;
+}
+.location{
+    width: 90%;
+    padding: 10px 16px;
+    border: 1px solid #D3D4DB;
+    border-radius: 5px;
+}
+
+.next_btn{
+    width: 90%;
+    padding: 10px 16px;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    background-color: var(--green-primary);
+}

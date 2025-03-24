@@ -1,6 +1,8 @@
 "use client"
-import React, { useState , useEffect} from "react";
+import React, { useState , useEffect, useContext, useReducer} from "react";
 import "../globals.css"
+import {useAdminContext} from "../context/context"
+import router from 'next/navigation'
 
 interface Appointment {
     appointment_id: string;
@@ -14,6 +16,16 @@ interface Appointment {
 export default function Dashboard ()
 {   const [isLoading, setIsLoading] = useState<boolean>(true);
     const [appointments, setAppointments] = useState<Appointment[]>([])
+    const [isMounted, setIsMounted] = useState(false);
+    const {isAdmin, setIsAdmin} = useAdminContext()
+
+    useEffect(() =>{
+            if (!isAdmin) {
+             return;
+            }
+          setIsMounted(true) 
+        }, [isAdmin]);
+
     useEffect (
         ()=>
         {
@@ -41,6 +53,9 @@ export default function Dashboard ()
             getAppointments();
         },[]
     )
+
+    if(!isMounted)  return (<div className="loading">Loading.....</div>)
+
     return (
         <div className="dashboard">
             <h1>Welcome to Admin Dashboard</h1>
@@ -76,7 +91,7 @@ export default function Dashboard ()
                   <td>{item.time}</td>
                   <td>
                     <button className="approve-btn">Approve</button>
-                    <button className="reject-btn">Reject</button>
+                    <button className="reject-btn">Decline</button>
                   </td>
                 </tr>
               ))

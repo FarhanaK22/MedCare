@@ -44,82 +44,6 @@
     outline: none;
 }
 
-/* ----------------Slots Styles ------------------ */
-
-.title_container{
-    width: 50%;
-    height:100%;
-    min-height: 88vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    line-height: 180%;
-    color: white;
-    padding: 60px;
-}
-
-.slot_div{
-    width: 100%;
-    min-height: 88vh;
-    height: 100%;
-    position: relative;
-    display: flex;
-}
-.checkup_image_container{
-    background-image: url(../assets/checkup.png);
-    background-size:     cover;                      /* <------ */
-    background-repeat:   no-repeat;
-    background-position: center center;   
-    width: 50%;
-    /* height: 100%;
-    height:100%;  */
-    min-height: 88vh;
-    position: absolute;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 10px;
-}
-
-.title{
-font-weight: 50;
-font-size: 60px;
-line-height: 150%;
-letter-spacing: -1%;
-}
-
-
-@media screen and  (max-width:570px) and (min-width:470px){
-    .title_container{
-            padding: 10px;
-    }
-}
-@media screen and  (max-width:469px){
-    .slot_div{
-        width: 100%;
-        min-height: 88vh;
-    flex-direction: column;
-    background-color: var(--green-primary);
-position: static;}
-    .title_container{
-        width: 100%;
-        min-height: 500px;
-        text-align: center;
-        padding: 10px;
-        font-weight: 600;
-        text-shadow: -1px -1px 3px white;
-        position: static;
-    }
-    .checkup_image_container{
-        position: static;
-        width: 100%;
-        padding: 10px;
-       }
-
-}
 
 .doctors{
     margin-top: 20px;
@@ -297,7 +221,7 @@ position: static;}
 }
 
 /* --------------Booking styles---------- */
-
+/* 
 .booking{
     margin: 20px auto;
     background-color: white;
@@ -370,4 +294,79 @@ position: static;}
     border: none;
     font-weight: 700;
     background-color: var(--green-primary);
+} */
+
+/* ----------------Slots Styles ------------------ */
+/* 
+.title_container{
+    width: 50%;
+    height:100%;
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    line-height: 180%;
+    color: white;
+    padding: 60px;
 }
+
+.slot_div{
+    width: 100%;
+    min-height: 88vh;
+    height: 100%;
+    position: relative;
+    display: flex;
+}
+.checkup_image_container{
+    background-image: url(../assets/checkup.png);
+    background-size:     cover;                      
+    background-repeat:   no-repeat;
+    background-position: center center;   
+    width: 50%;
+    min-height: 88vh;
+    position: absolute;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.title{
+font-weight: 50;
+font-size: 60px;
+line-height: 150%;
+letter-spacing: -1%;
+}
+
+
+@media screen and  (max-width:570px) and (min-width:470px){
+    .title_container{
+            padding: 10px;
+    }
+}
+@media screen and  (max-width:469px){
+    .slot_div{
+        width: 100%;
+        min-height: 88vh;
+    flex-direction: column;
+    background-color: var(--green-primary);
+position: static;}
+    .title_container{
+        width: 100%;
+        min-height: 500px;
+        text-align: center;
+        padding: 10px;
+        font-weight: 600;
+        text-shadow: -1px -1px 3px white;
+        position: static;
+    }
+    .checkup_image_container{
+        position: static;
+        width: 100%;
+        padding: 10px;
+       }
+
+} */

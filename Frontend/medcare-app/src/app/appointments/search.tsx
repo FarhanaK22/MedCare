@@ -6,14 +6,14 @@ import searchGlass from "../../../public/images/searchGlass.png"
 import styles from "./appointments.module.css"
 
 
-const Search = ({ onSearch}) => {
+const Search = () => {
   const [query, setQuery] = useState('');
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSearch(query);
+    // onSearch(query);
   };
   return (
     <div className={styles.search_container}>
