@@ -7,13 +7,39 @@ import right from "../../../public/images/rightarrow.png"
 import left from "../../../public/images/leftarrow.png"
 import morning from "../../../public/images/sun.png"
 import afternoon from "../../../public/images/sunset.png"
-import checkup from "../assets/checkup.png";
-import {generateDateObject }    from "./calender"
-import DateObject from "./calender"
+
+interface DateObject {
+    date: number; 
+    day: string; 
+    month: string; 
+    year: number; 
+  }
+  type SelectedDate = {
+    month: string;
+    year: number;
+  };
+  
+  const generateDateObject = (offset: number = 0): DateObject =>{
+    const date = new Date();
+    date.setDate(date.getDate() + offset);
+
+    return {
+        date :date.getDate(),
+        day : date.toLocaleDateString('en-US',{weekday : "long"}),
+        month : date.toLocaleDateString('en-US',{month : "long"}),
+        year :date.getFullYear(),};
+}
+const generateWeekdates = (weekOffset = 0) => {
+    const datesArray: DateObject[] = [];
+    for (let i = 0; i < 7; i++) {
+      const dayOffset = weekOffset + i;
+      datesArray.push(generateDateObject(dayOffset));
+    }} 
 
 export default function Slot() {
-  const [date,setDate] = useState(22);
+//   const [date,setDate] = useState(22);
   const [bookingType,setBookingType] = useState("online");
+  const [offset, setOffset] = useState<number>(0)
   const [weekDates, setWeekDates] = useState<DateObject[]>([]);
   const [selectedDate, setSelectedDate] = useState<DateObject>(generateDateObject());
   const [morningAvailableSlot,setMorningAvailableSlot] = useState<string[]>([]);
@@ -22,33 +48,48 @@ export default function Slot() {
   const [morningSlots,setMorningSlots] =useState<string[]>([])
   const [eveningSlots,setEveningSlots] = useState<string[]>([])
   
-  useEffect(()=>
-  {
-      const generateWeekdates = () =>
-      {
-          const datesArray : DateObject[]  = [];
-          for (let i =0; i<7 ;i++) datesArray.push(generateDateObject(i))
-          setWeekDates(datesArray);
-      };
-      generateWeekdates();
-  },[]);
   
+//      useEffect(()=>{
+//       const generateWeekdates = () =>
+//       {
+//           const datesArray : DateObject[]  = [];
+//           for (let i =0; i<7 ;i++) datesArray.push(generateDateObject(i))
+//           setWeekDates(datesArray);
+//       };
+//       generateWeekdates();
+//   },[]);
+const generateWeekdates = (weekOffset = 0) => {
+    const datesArray: DateObject[] = [];
+    for (let i = 0; i < 7; i++) {
+      const dayOffset = weekOffset + i;
+      datesArray.push(generateDateObject(dayOffset));
+    }
+    setWeekDates(datesArray);
+
+    // Update selectedDate to first day of the week
+    setSelectedDate(generateDateObject(weekOffset));
+  };
+   const handlePrevMonth = () =>setOffset((prev) => prev - 30);
+   const handleNextMonth = () =>setOffset((prev) => prev + 30);
+   const handleNext6Days = () => setOffset((prev) => prev + 7)
+
   const handleDateClick = (dateObj: DateObject) => {
       setSelectedDate(dateObj);
       console.log("Selected Date:", dateObj);
     };
+    useEffect(() => {
+        generateWeekdates(offset);
+      }, [offset]);
     useEffect(()=>
       {  //data from api 
           const Morning = ["9:00" , "9:30" , "10:00" ,"10:30" ,"11:00" ,"11:30","12:00","12:30"]
           const Evening = ["3:00", "3:30" , "4:00" ,"4:30","5:00","5:30","6:00","6:30"]
           const Availableslotdata = {
-          morning: ["9:00" , "9:30","12:00","12:30"],
-          evening:["2:00" , "2:30" , "5:00","6:00","6:30"],}
+          morning: ["9:00" , "9:30","12:00"],
+          evening:["3:00", "3:30"  ,"4:30"]}
   
-          const AvailableMorningSlots = Availableslotdata.morning
-          const AvailablEveningSlots = Availableslotdata.evening
-          setMorningAvailableSlot(AvailableMorningSlots)
-          setEveningAvailableSlot(AvailablEveningSlots)
+          setMorningAvailableSlot(Availableslotdata.morning)
+          setEveningAvailableSlot(Availableslotdata.evening)
           setEveningSlots(Evening)
           setMorningSlots(Morning)
       },[selectedTime])
@@ -83,12 +124,13 @@ export default function Slot() {
   {/* ................................calender ................................. */}
               <div className={styles.dates_container}>
                   <div className={styles.month}>
-                          <Image src={left} alt="left-arrow" width={25} height={23} />
+                          <Image onClick={generateDateObject().month !== selectedDate.month || offset ? handlePrevMonth : undefined} 
+                          src={left} alt="left-arrow" width={25} height={23} />
                           <div className={styles.date}>
                               <p>{selectedDate.month}</p>
                               <p>{selectedDate.year}</p>
                           </div>
-                          <Image src={right} alt="right-arrow" width={25} height={23} />
+                          <Image onClick={handleNextMonth} src={right} alt="right-arrow" width={25} height={23} />
                       </div>
                   <div className={styles.dates}> 
                   {weekDates.map((item , index)=>
@@ -110,7 +152,7 @@ export default function Slot() {
                           </button>
                   ))}
                   </div>
-                  <Image src={right} alt="right-arrow" width={25} height={23} className={styles.right_date} />
+                  <Image  onClick={handleNext6Days} src={right} alt="right-arrow" width={25} height={23} className={styles.right_date} />
               </div>
       
 
@@ -135,9 +177,10 @@ export default function Slot() {
                            onClick={()=>handleSlotClick(item)}
                            className ={`${styles.slot_btn}
                            ${ selectedTime === item ?
-                               styles.selected_time : ""
-                           }
+                               styles.bg_green : ""
+                           } ${!morningAvailableSlot.includes(item) ? styles.bg_gray : ""}
                            `} 
+                          
                            disabled={!morningAvailableSlot.includes(item)}
                            >{item}</button>
                        ))
@@ -160,8 +203,8 @@ export default function Slot() {
                                     onClick={()=>handleSlotClick(item)}
                                     className ={`${styles.slot_btn}
                                     ${ selectedTime === item ?
-                                        styles.selected_time : ""
-                                    }
+                                        styles.bg_green : ""
+                                    } ${!eveningAvailableSlot.includes(item) ? styles.bg_gray : ""}
                                     `} 
                                     disabled={!eveningAvailableSlot.includes(item)}
                                     >{item}</button>

@@ -11,11 +11,23 @@ import { useState ,useEffect} from "react";
 import Router from "next/navigation";
 import { useRouter } from "next/navigation";
 
+interface doctorFilter {
+    rating : number,
+    experience : number,
+    gender : string,
+}
+
+const initialFilter ={
+    rating : 0,
+    experience : 0,
+    gender : "any",
+}
 export default function Appointments()
 {   const router = useRouter()
     const [pageno ,setPageno]  = useState(1)
     const [query, setQuery] = useState('');
     const [isMounted,setIsMounted] = useState<boolean>(false)
+    const [Filters , setFilters] = useState<doctorFilter>(initialFilter)
 
     useEffect(()=>
     {
@@ -27,6 +39,15 @@ export default function Appointments()
   };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();}
+
+    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
+    {
+        const {name ,value} = e.target;
+        setFilters((prevFilters)=>( {
+                ...prevFilters,
+                [name] :value ,
+            }))
+    }
     // onSearch(query);
   // const [results, setResults] = useState([]);
   // const [data, setData] = useState([]);
@@ -94,15 +115,19 @@ export default function Appointments()
                         <label htmlFor="showall_rating">Show all</label>
                     </div>
                     <div className={styles.radio}>
-                        <input type="radio" name="rating" id="1_star" value={"1"}/>
+                        <input type="radio" name="rating" id="1_star" value={1}/>
                         <label htmlFor="1_star">1 star</label>
                     </div>
                     <div className={styles.radio}>
-                        <input type="radio" name="rating" id="2_star" value={"2"} />
+                        <input type="radio" name="rating" id="2_star" value={2} />
                         <label htmlFor="2_star">2 star</label>
                     </div>
                     <div className={styles.radio}>
-                        <input type="radio" name="rating" id="3_star" value={"3"} />
+                        <input 
+                        type="radio" 
+                        name="rating" id="3_star" 
+                        value={3} checked= {Filters.rating === 3} 
+                        onChange={handleFilterChange}/>
                         <label htmlFor="3_star">3 star</label>
                     </div>
                     <div className={styles.radio}>

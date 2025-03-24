@@ -27,8 +27,11 @@
     justify-content: flex-start;
     position: relative;
     gap:10px;
-    overflow: hidden;
-    
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scrollbar-color: white  white ;
+    scrollbar-width: thin;
+  
 }
 .right_date{
     position: absolute;
@@ -232,6 +235,10 @@ position: static;}
 .bg_green{
     color: white;
     background-color: var(--green-primary);
+}
+.bg_gray{
+    color: #9092A3;
+    background-color: #DEDEDE;
 }
 .booking_head{
     justify-content: space-between;
