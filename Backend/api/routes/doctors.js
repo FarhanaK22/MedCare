@@ -9,6 +9,6 @@ const {doctorID} = require("../controllers/doctorsController/doctors.js")
 router.get('/all',doctorsData)
 router.get('/filter',filterDoctors)
 router.get("/search/:query",search_doctor) 
-router.get("/booking/:doctor_id",doctorID)
+router.get("/detail/:doctor_id",doctorID)
 
 module.exports = router

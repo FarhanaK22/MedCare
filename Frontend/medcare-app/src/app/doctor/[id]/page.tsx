@@ -1,10 +1,11 @@
 "use client"
 import React from "react";
 import { useState , useEffect } from "react";
-import styles from "./doctor.module.css"
+import styles from "../doctor.module.css"
 import Image from "next/image";
-import pic  from "../../../public/images/doctor.png"
-import { useRouter } from "next/navigation";
+import pic  from "../../../../public/images/doctor.png"
+import { useRouter ,useParams } from "next/navigation";
+import axios from "axios";
 
 interface Doctor{
     id: number,
@@ -18,16 +19,30 @@ interface Doctor{
 }
 
 export default function Doctor()
-{   const router = useRouter()
+{   const params = useParams();
+    const router = useRouter()
+    const { id } = params;
     const [isMounted,setIsMounted] = useState<boolean>(false)
     const [doctor, setDoctorDetail ] = useState<Doctor>()
     const [review, setReview] = useState<boolean>(false)
 
-    useEffect(()=>setIsMounted(true),[router])
+    useEffect(()=>setIsMounted(true),[router,params])
     useEffect (()=>
-    {
-        
-    })
+    {   if (!id) return;
+        const url = "http://localhost:3001/doctors/detail";
+        console.log("Fetching URL:", url);
+        const doctorDetail = async() =>
+        { try{
+            const response = await axios.get(`${url}/${id}`)
+            console.log("Doctors fetched:", response.data);
+            setDoctorDetail(response.data);
+          } catch (err) {
+            console.error("Error fetching doctors using filter:", err);
+          }
+        }
+        doctorDetail();
+        console.log(id)
+    },[id])
     const handleBooking = () :void=> router.push(`/booking`)
     const handleReview = (e: React.MouseEvent<HTMLButtonElement>) => {setReview(!review)
         e.preventDefault()
@@ -37,7 +52,7 @@ export default function Doctor()
 
            <div className={styles.doctor_container}>
             <Image src={pic} alt="doctor_image" height={170} width={170}/>
-            <h2 className={styles.name}>name{doctor?.name}</h2>
+            <h2 className={styles.name}>{doctor?.name}</h2>
             <div className={styles.info}>
                 <p>Degree : <span>{doctor?.degree}</span></p>
                 <p>Specialty : <span>{doctor?.speciality}</span></p>
