@@ -12,7 +12,7 @@ interface Doctor{
     name : string,
     degree : string,
     experience : number,
-    rating : number,
+    average_rating : number,
     location :string,
     speciality : string,
     gender : string
@@ -57,7 +57,7 @@ export default function Doctor()
                 <p>Degree : <span>{doctor?.degree}</span></p>
                 <p>Specialty : <span>{doctor?.speciality}</span></p>
                 <p>Experience : <span>{doctor?.experience} years</span></p>
-                <p>Ratings : <span>{doctor?.rating}/5 </span></p>
+                <p>Ratings : <span>{doctor?.average_rating} / 5 </span></p>
                 <p>Gender : <span>{doctor?.gender}</span></p>
                 <p>Location : <span>{doctor?.location}</span></p>
                 <p>Availability : <span>Monday to Sunday</span> </p>

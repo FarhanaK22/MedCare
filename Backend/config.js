@@ -4,7 +4,8 @@ dotenv.config()
 const config = {
   port: 3001,
   dbUser: "postgres",
-  dataBase: "doctors_appointment_booking",
+  dataBase: "doctorAppointment",
+  D:"doctors_appointment_booking",
   dbPassword: process.env.DB_PASSWORD,
   dbPort: 5432,
   max: 10,

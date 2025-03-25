@@ -3,15 +3,12 @@ import React from "react";
 import Image from "next/image";
 import styles from "./appointments.module.css"
 import doctor  from "../../../public/images/doctor.png"
-import femaledoc from "../../../public/images/female.png"
-import maledoc from "../../../public/images/maledoc.png"
 import star  from "../../../public/images/Star.png"
 import blankstar from "../../../public/images/blankStar.png"
 import stethoscope  from "../../../public/images/Stethoscope.png"
 import hourglass from "../../../public/images/Hourglass.png"
 import searchGlass from "../../../public/images/searchGlass.png"
 import { useState ,useEffect} from "react";
-import Router from "next/navigation";
 import { useRouter } from "next/navigation";
 import axios from "axios"
 
@@ -24,7 +21,7 @@ interface doctorFilter {
 interface doctorType {
     doctor_id : number,
     experience : number,
-    rating : number,
+    average_rating : number,
     location: string,
     name : string,
     speciality : string,
@@ -32,7 +29,7 @@ interface doctorType {
     gender : string,
 }
 const initialFilter ={
-    rating : "all",
+    rating : "5",
     experience : "all",
     gender : "all",
 }
@@ -40,34 +37,23 @@ export default function Appointments()
 {  
 //  ************************STATES**************************************
     const router = useRouter()
-    const [pageno ,setPageno]  = useState(1)
-    const [search, setSearch] = useState('');
+    const [pageno ,setPageno]  = useState<number>(1)
+    const [search, setSearch] = useState<string>('');
+    const [userinput,setUserInput] =useState<string>('')
     const [isMounted,setIsMounted] = useState<boolean>(false)
     const [Filters , setFilters] = useState<doctorFilter>(initialFilter)
     const [doctors,setDoctors] = useState<doctorType[]>([])
-    const [doc_pic,setPic] = useState<string>('')
     useEffect(()=>
-    {
+    {  
         setIsMounted(true)
     },[router])
     // ****************************HANDLING USER SIDE CHANGES **************************
 const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    setUserInput(e.target.value);
   };
-const handleSearch = async(e : React.MouseEvent<HTMLButtonElement>)=>{
-            e.preventDefault();
-            const url = "http://localhost:3001/doctors/search";
-          try {
-            const response = await axios.get(
-              `${url}/${search}`
-            );
-            console.log("Doctors fetched:", response.data);
-            setDoctors(response.data);
-          } catch (err) {
-            console.error("Error fetching doctors using filter:", err);
-          }
-            
-}
+const handleSearch = (e : React.MouseEvent<HTMLButtonElement>)=> 
+    {e.preventDefault();
+        setSearch(userinput)}
     
 const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
     {   e.preventDefault()
@@ -87,6 +73,8 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
     const resetFilter = (e:React.MouseEvent<HTMLButtonElement>) :void =>{
         e.preventDefault()
         setFilters(initialFilter)
+        setUserInput("")
+        setSearch("")
     }
 // ************************FETCH FILTERED DOCTORS ***********************************
     useEffect(()=> {   
@@ -95,7 +83,7 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
         const fetchDoctors = async () => {
           try {
             const response = await axios.get(
-              `${url}?rating=${rating}&experience=${experience}&gender=${gender}`
+              `${url}?rating=${rating}&experience=${experience}&gender=${gender}&searchQuery=${search}&page=${pageno}`
             );
             console.log("Doctors fetched:", response.data);
             setDoctors(response.data);
@@ -103,8 +91,9 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
             console.error("Error fetching doctors using filter:", err);
           }
         };fetchDoctors();
-    },[Filters])
+    },[Filters, search,pageno])
 
+    if(!isMounted) return<div>Loading.........</div>
   return (
     <div>
     <div className={styles.result}>
@@ -116,7 +105,7 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
           <Image src={searchGlass} alt ="search_glass" width={15} height={15} id="searchGlass"  className={styles.foot_icon}/>
               <input 
                   type="text" 
-                  value={search} 
+                  value={userinput} 
                   onChange={handleSearchChange} 
                   placeholder="Search doctors"
                   className={styles.search_input}
@@ -125,7 +114,7 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
           <button onClick={handleSearch} className={styles.search_btn}>Search</button>
           </form>
       </div>
-      <h1 className={styles.head}>6 doctors available</h1>
+      <h1 className={styles.head}>{doctors.length} doctors available</h1>
       <p>Book appointments with minimum wait-time & verified doctor details</p>
       
       <div className={styles.doctors}>
@@ -279,7 +268,8 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
 {/* ***************************** DOCTORS CARDS ******************************************* */}
        
         <div className={styles.cards}>
-           {doctors.map((doc)=>
+           {doctors.length<=0 ? <div style={{color:"red"}}>No results found....</div> :
+           doctors.map((doc)=>
                 <div  key = {doc.doctor_id}className={styles.card}  onClick={()=>handleDoctor(doc)}>
                  <Image
                 src={doctor}
@@ -300,10 +290,10 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
                 </div>
                 <div className={styles.info}>
                     <p>Ratings:</p>
-                    {Array.from({ length: doc.rating }).map((_, i) => (
+                    {Array.from({ length: doc.average_rating }).map((_, i) => (
                     <Image key={`star-${i}`} src={star} alt="star" height={17.5} width={17.5} />
                     ))}
-                    {Array.from({ length: 5 - doc.rating }).map((_, i) => (
+                    {Array.from({ length: 5 - doc.average_rating }).map((_, i) => (
                     <Image key={`blankstar-${i}`} src={blankstar} alt="blankstar" height={17.5} width={17.5} />
                     ))}
                 </div>
@@ -316,9 +306,13 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
       </div>
 {/* *************************PAGINATION*************************** */}
       <div className={styles.pagination}>
-        <button>{`<`} Prev</button>
+        <button onClick={()=>{pageno>1 ? setPageno(pageno-1) : null
+            handleSearch
+        }}>{`<`} Prev</button>
           <p style={{color:"#8C8C8C"}}>{pageno}</p>
-        <button>Next {`>`}</button>
+        <button onClick={()=>{doctors.length/pageno > pageno ? setPageno(pageno+1) : null
+            handleSearch
+        }}>Next {`>`}</button>
       </div>  
 
       </div>
