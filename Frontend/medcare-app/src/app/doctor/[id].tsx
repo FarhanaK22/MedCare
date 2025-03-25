@@ -24,6 +24,10 @@ export default function Doctor()
     const [review, setReview] = useState<boolean>(false)
 
     useEffect(()=>setIsMounted(true),[router])
+    useEffect (()=>
+    {
+        
+    })
     const handleBooking = () :void=> router.push(`/booking`)
     const handleReview = (e: React.MouseEvent<HTMLButtonElement>) => {setReview(!review)
         e.preventDefault()

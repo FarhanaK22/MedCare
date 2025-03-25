@@ -3,6 +3,7 @@ import React from "react";
 import Image from "next/image";
 import styles from "./appointments.module.css"
 import doctor  from "../../../public/images/doctor.png"
+import femaledoc from "../../../public/images/female.png"
 import maledoc from "../../../public/images/maledoc.png"
 import star  from "../../../public/images/Star.png"
 import blankstar from "../../../public/images/blankStar.png"
@@ -32,7 +33,7 @@ interface doctorType {
 }
 const initialFilter ={
     rating : "all",
-    experience : "15-50",
+    experience : "all",
     gender : "all",
 }
 export default function Appointments()
@@ -40,45 +41,34 @@ export default function Appointments()
 //  ************************STATES**************************************
     const router = useRouter()
     const [pageno ,setPageno]  = useState(1)
-    const [query, setQuery] = useState('');
+    const [search, setSearch] = useState('');
     const [isMounted,setIsMounted] = useState<boolean>(false)
     const [Filters , setFilters] = useState<doctorFilter>(initialFilter)
     const [doctors,setDoctors] = useState<doctorType[]>([])
-    const data = [
-        {
-          doctor_id: 1,
-          experience: 10,
-          rating: 4,
-          location: "New York",
-          name: "Dr. John Doe",
-          speciality: "Cardiologist",
-          degree: "MD",
-          gender: "male",
-        },
-        {
-          doctor_id: 2,
-          experience: 15,
-          rating: 5,
-          location: "Los Angeles",
-          name: "Dr. Jane Smith",
-          speciality: "Dermatologist",
-          degree: "MBBS",
-          gender: "female",
-        },]
-    useEffect(() => {
-        setDoctors(data);
-        }, []);
+    const [doc_pic,setPic] = useState<string>('')
     useEffect(()=>
     {
         setIsMounted(true)
     },[router])
     // ****************************HANDLING USER SIDE CHANGES **************************
 const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
+    setSearch(e.target.value);
   };
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();}
-
+const handleSearch = async(e : React.MouseEvent<HTMLButtonElement>)=>{
+            e.preventDefault();
+            const url = "http://localhost:3001/doctors/search";
+          try {
+            const response = await axios.get(
+              `${url}/${search}`
+            );
+            console.log("Doctors fetched:", response.data);
+            setDoctors(response.data);
+          } catch (err) {
+            console.error("Error fetching doctors using filter:", err);
+          }
+            
+}
+    
 const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
     {   e.preventDefault()
         const {name ,value} = e.target;
@@ -90,31 +80,29 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
 
     const [filter,setFilter] = useState(false)//for filter popup
     const handleFilter =  ()=>setFilter(!filter)
-    const handleDoctor = () :void=> router.push(`/doctor`)
-    const handleBooking =  (doc: doctorType): void => {
-        router.push(`/booking?doctor_id=${doc.doctor_id}`);}
+    const handleDoctor = (doc: doctorType) :void=> router.push(`/doctor/${doc.doctor_id}`)
+    const handleBooking =  (doc: doctorType): void =>
+        {router.push(`/booking/${doc.doctor_id}`);}
+
     const resetFilter = (e:React.MouseEvent<HTMLButtonElement>) :void =>{
         e.preventDefault()
         setFilters(initialFilter)
     }
 // ************************FETCH FILTERED DOCTORS ***********************************
-    useEffect(()=>
-    {   const url = "http://localhost:3001"
-        const rating = Filters.rating
-        const experience = Filters.experience
-        const gender = Filters.gender
-        const fetchDoctors = async()=>
-        {   try{
-                const response = await axios.get
-                (`${url}/doctors?rating=${rating}&experience=${experience}&gender=${gender}`)
-                console.log(response.status);
-                
-            }catch(err)
-            {
-               console.error("eror fetching doctors using filter",err)
-            }
-            }
-
+    useEffect(()=> {   
+        const url = "http://localhost:3001/doctors/filter";
+        const { rating, experience, gender } = Filters;
+        const fetchDoctors = async () => {
+          try {
+            const response = await axios.get(
+              `${url}?rating=${rating}&experience=${experience}&gender=${gender}`
+            );
+            console.log("Doctors fetched:", response.data);
+            setDoctors(response.data);
+          } catch (err) {
+            console.error("Error fetching doctors using filter:", err);
+          }
+        };fetchDoctors();
     },[Filters])
 
   return (
@@ -123,18 +111,18 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
  {/* *************************SEARCH COMPONENT***************************************** */}
         <div className={styles.search_container}>
           <p className={styles.find_doc}>Find a doctor at your own ease</p>
-          <form onSubmit={handleSubmit} className={styles.search_form}>
+          <form  className={styles.search_form}>
           <div className={styles.search_bar}>
           <Image src={searchGlass} alt ="search_glass" width={15} height={15} id="searchGlass"  className={styles.foot_icon}/>
               <input 
                   type="text" 
-                  value={query} 
+                  value={search} 
                   onChange={handleSearchChange} 
                   placeholder="Search doctors"
                   className={styles.search_input}
               />
           </div>
-          <button type="submit" className={styles.search_btn}>Search</button>
+          <button onClick={handleSearch} className={styles.search_btn}>Search</button>
           </form>
       </div>
       <h1 className={styles.head}>6 doctors available</h1>
@@ -289,12 +277,16 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
         </div>
 
 {/* ***************************** DOCTORS CARDS ******************************************* */}
+       
         <div className={styles.cards}>
            {doctors.map((doc)=>
-                <div  key = {doc.doctor_id}className={styles.card}  onClick={handleDoctor}>
-                { doc.gender === "female" ? 
-                <Image src={doctor} alt="doctor_image" height={150} width={150}/> :
-                <Image src={maledoc} alt="doctor_image" height={150} width={150}/>}
+                <div  key = {doc.doctor_id}className={styles.card}  onClick={()=>handleDoctor(doc)}>
+                 <Image
+                src={doctor}
+                alt="doctor_image"
+                height={150}
+                width={150}
+                />
                 <h2 className={styles.name}>{doc.name}, {doc.degree}</h2>
                 <div className={styles.detail} >
                     <div className={styles.info}>
