@@ -145,18 +145,21 @@
     border-radius: 16px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding:20px 0;
-    gap: 15px;
+    height: 380px;
+    gap: 10px;
 }
 .detail{
     width:60%;
     display: flex;
+    gap: 16px;
     justify-content: space-between;
 }
 .info{
+    width: 50%;
     display: flex;
+    justify-content: center;
 }
 .cardBtn{
     border: 1px solid #DEDEDE;
@@ -166,7 +169,12 @@
     margin-top: 20px;
     color:#0E2515;
     width: 80%;
+    font-size:18px;
     height: 60px;
+    cursor: pointer;
+}.cardBtn:hover{
+    background-color: var(--green-primary);
+    color: white;
 }
 
 @media screen  and (min-width:768px) and (max-width:1000px){
@@ -237,153 +245,3 @@
     }
 }
 
-/* --------------Booking styles---------- */
-/* 
-.booking{
-    margin: 20px auto;
-    background-color: white;
-    width: 80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap:10px;
-    padding: 1rem 0;
-}
-.booking_head_p{
-    color: #221E20;
-    font-weight: 400;
-    font-size: 22px;
-}
-.appointment_btn{
-    cursor: pointer;
-    color:white;
-    border-radius: 10px;
-    border:none;
-    padding: 8px 16px;
-    background-color: var(--green-primary);
-}
-.booking_head,.booking_type ,.slot_session{
-    display: flex;
-    width: 90%;
-    justify-content: center;
-    align-items: center;
-}
-@media screen and (max-width:600px) {
-.booking_head{
-    flex-direction: column;
-    font-size: 16px;
-}
-}
-
-.bookingtype_online ,.bookingtype_offline{
-    padding: 8px 16px;
-    width: 50%;
-    border: 1px solid #F4D7D0;
-    border-radius: 5px;
-    background-color: transparent;
-}
-.bookingtype_online{
-    border-radius: 5px 0 0 5px;
-}
-.bookingtype_offline{
-    border-radius: 0 5px 5px 0;
-}
-.bg_green{
-    color: white;
-    background-color: var(--green-primary);
-}
-.booking_head{
-    justify-content: space-between;
-}
-.location{
-    width: 90%;
-    padding: 10px 16px;
-    border: 1px solid #D3D4DB;
-    border-radius: 5px;
-}
-
-.next_btn{
-    width: 90%;
-    padding: 10px 16px;
-    color: white;
-    border-radius: 10px;
-    border: none;
-    font-weight: 700;
-    background-color: var(--green-primary);
-} */
-
-/* ----------------Slots Styles ------------------ */
-/* 
-.title_container{
-    width: 50%;
-    height:100%;
-    min-height: 88vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    line-height: 180%;
-    color: white;
-    padding: 60px;
-}
-
-.slot_div{
-    width: 100%;
-    min-height: 88vh;
-    height: 100%;
-    position: relative;
-    display: flex;
-}
-.checkup_image_container{
-    background-image: url(../assets/checkup.png);
-    background-size:     cover;                      
-    background-repeat:   no-repeat;
-    background-position: center center;   
-    width: 50%;
-    min-height: 88vh;
-    position: absolute;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 10px;
-}
-
-.title{
-font-weight: 50;
-font-size: 60px;
-line-height: 150%;
-letter-spacing: -1%;
-}
-
-
-@media screen and  (max-width:570px) and (min-width:470px){
-    .title_container{
-            padding: 10px;
-    }
-}
-@media screen and  (max-width:469px){
-    .slot_div{
-        width: 100%;
-        min-height: 88vh;
-    flex-direction: column;
-    background-color: var(--green-primary);
-position: static;}
-    .title_container{
-        width: 100%;
-        min-height: 500px;
-        text-align: center;
-        padding: 10px;
-        font-weight: 600;
-        text-shadow: -1px -1px 3px white;
-        position: static;
-    }
-    .checkup_image_container{
-        position: static;
-        width: 100%;
-        padding: 10px;
-       }
-
-} */
