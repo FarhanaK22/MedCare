@@ -63,7 +63,11 @@ const doctorID = async (req, res) => {
 
 const availableSlots = async(req,res)=>
 {
-
+  console.log(req.user)
+  if(req.isAuthenticated())
+    res.send("access to give view")
+  else
+  res.redirect("http://localhost:3001/user/login")
 }
 
 const doctorAvailability = async(req,res)=>

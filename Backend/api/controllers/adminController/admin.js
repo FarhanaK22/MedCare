@@ -1,4 +1,3 @@
-// const { response, json } = require("express");
 const pool = require("../../db/index.js")
 
 const adminLogin = async(req,res,next)=>
