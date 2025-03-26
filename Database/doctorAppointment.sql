@@ -17,6 +17,9 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password TEXT DEFAULT NULL
 );
+ALTER TABLE users 
+RENAME id to user_id
+select * from users
 CREATE TABLE review (
     rating_id SERIAL PRIMARY KEY,
     rating INT DEFAULT 1 CHECK (rating >= 1 AND rating <= 5),
@@ -92,4 +95,107 @@ VALUES
 
 (5, NULL, 1, 1),
 (5, NULL, 1, 2);
+
+
+CREATE OR REPLACE VIEW view_doctor AS
+SELECT 
+    d.name,
+    d.speciality,
+    d.degree,
+    d.experience,
+    d.gender,
+    d.location,
+    COALESCE(ROUND(AVG(r.rating))::INT, 0) AS avgrating
+FROM 
+    doctors d
+LEFT JOIN 
+    review r ON d.doctor_id = r.doctor_id
+GROUP BY 
+    d.doctor_id, d.name, d.speciality, d.degree, d.experience, d.gender, d.location;
+select * from view_doctor
+
+CREATE TABLE slots (
+    slot_id SERIAL PRIMARY KEY,
+    slot_time TIME NOT NULL
+);
+INSERT INTO slots (slot_time)
+VALUES 
+    ('08:00:00'),
+    ('08:30:00'),
+    ('09:00:00'),
+    ('09:30:00'),
+    ('10:00:00'),
+    ('10:30:00'),
+    ('11:00:00'),
+    ('11:30:00');
+INSERT INTO slots (slot_time)
+VALUES 
+    ('15:00:00'),
+    ('15:30:00'),
+    ('16:00:00'),
+    ('16:30:00'),
+    ('17:00:00'),
+    ('17:30:00'),
+    ('18:00:00'),
+    ('18:30:00');
+
+CREATE TABLE appointments (
+    appointment_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    doctor_id INT NOT NULL,
+    slot_id INT NOT NULL,
+    booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    appointment_date DATE NOT NULL,
+    appointment_type VARCHAR(10) CHECK (appointment_type IN ('online', 'offline')),
+    status VARCHAR(10) CHECK (status IN ('pending', 'approved', 'declined')),
+
+    -- Corrected foreign keys
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_doctor FOREIGN KEY (doctor_id) REFERENCES doctors (doctor_id) ON DELETE CASCADE,
+    CONSTRAINT fk_slot FOREIGN KEY (slot_id) REFERENCES slots (slot_id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE doctor_availability (
+    availability_id SERIAL PRIMARY KEY,
+    doctor_id INT NOT NULL,
+    working_days VARCHAR(10) CHECK (working_days IN ('weekdays', 'weekends')),
+    slot_start TIME NOT NULL,
+    slot_end TIME NOT NULL,
+
+    -- Foreign key to reference doctor_id from doctors table
+    CONSTRAINT fk_doctor FOREIGN KEY (doctor_id) REFERENCES doctors (doctor_id) ON DELETE CASCADE,
+
+    -- Ensuring that slot_start is before slot_end
+    CONSTRAINT check_slot_time CHECK (slot_start < slot_end)
+);
+
+select * from doctors
+-- Insert random availability data for doctors 1 to 13 (either weekdays OR weekends)
+INSERT INTO doctor_availability (doctor_id, working_days, slot_start, slot_end)
+VALUES
+-- Doctors assigned to weekdays
+(1, 'weekdays', '08:00:00', '11:30:00'),
+(2, 'weekdays', '09:00:00', '12:00:00'),
+(3, 'weekdays', '08:30:00', '11:00:00'),
+(4, 'weekdays', '10:00:00', '13:00:00'),
+(5, 'weekdays', '15:00:00', '17:30:00'),
+(6, 'weekdays', '09:30:00', '11:30:00'),
+(7, 'weekdays', '08:00:00', '11:00:00'),
+
+-- Doctors assigned to weekends
+(8, 'weekends', '10:00:00', '12:30:00'),
+(9, 'weekends', '15:30:00', '18:00:00'),
+(10, 'weekends', '09:00:00', '11:30:00'),
+(11, 'weekends', '08:00:00', '10:30:00'),
+(12, 'weekends', '15:00:00', '18:30:00'),
+(13, 'weekends', '10:00:00', '12:00:00');
+
+INSERT INTO appointments (user_id, doctor_id, slot_id, booking_date, appointment_date, appointment_type, status)
+VALUES
+(1, 9, 10, NOW(), '2025-04-07', 'offline', 'declined'), -- Weekend for Doctor 9
+(1, 5, 5, NOW(), '2025-04-03', 'online', 'approved'), -- Weekday for Doctor 5
+-- User 2 appointments
+(2, 3, 3, NOW(), '2025-04-02', 'offline', 'pending'), -- Weekday for Doctor 3
+(2, 10, 11, NOW(), '2025-04-06', 'online', 'approved');
 

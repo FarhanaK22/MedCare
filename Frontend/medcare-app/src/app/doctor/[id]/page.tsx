@@ -12,10 +12,15 @@ interface Doctor{
     name : string,
     degree : string,
     experience : number,
-    average_rating : number,
+    avgrating : number,
     location :string,
     speciality : string,
     gender : string
+}
+interface Availability {
+    working_days: string,
+    slot_start: string,
+    slot_end: string,
 }
 
 export default function Doctor()
@@ -25,12 +30,9 @@ export default function Doctor()
     const [isMounted,setIsMounted] = useState<boolean>(false)
     const [doctor, setDoctorDetail ] = useState<Doctor>()
     const [review, setReview] = useState<boolean>(false)
+    const [availability ,setDoctorAvailability]= useState<Availability>()
 
-    useEffect(()=>setIsMounted(true),[router,params])
-    useEffect (()=>
-    {   if (!id) return;
         const url = "http://localhost:3001/doctors/detail";
-        console.log("Fetching URL:", url);
         const doctorDetail = async() =>
         { try{
             const response = await axios.get(`${url}/${id}`)
@@ -39,10 +41,26 @@ export default function Doctor()
           } catch (err) {
             console.error("Error fetching doctors using filter:", err);
           }
+        }  
+        const url2= "http://localhost:3001/doctors/doctorAvailability"
+        const doctorAvailability= async() =>
+            { try{
+                const response = await axios.get(`${url2}/${id}`)
+                console.log("Doctors availability:", response.data);
+                setDoctorAvailability(response.data);
+                console.log(availability)
+              } catch (err) {
+                console.error("Error fetching doctors using filter:", err);
+              }
+            } 
+    useEffect(() => {
+        if (id) {
+            doctorAvailability();
+            doctorDetail();
         }
-        doctorDetail();
-        console.log(id)
-    },[id])
+        }, [id]);
+      useEffect(()=>setIsMounted(true),[router,params])
+    
     const handleBooking = () :void=> router.push(`/booking`)
     const handleReview = (e: React.MouseEvent<HTMLButtonElement>) => {setReview(!review)
         e.preventDefault()
@@ -50,18 +68,18 @@ export default function Doctor()
      if(!isMounted) return (<div>Loading...........</div>)
     return (
 
-           <div className={styles.doctor_container}>
+           <div key = {doctor?.id}className={styles.doctor_container}>
             <Image src={pic} alt="doctor_image" height={170} width={170}/>
             <h2 className={styles.name}>{doctor?.name}</h2>
             <div className={styles.info}>
                 <p>Degree : <span>{doctor?.degree}</span></p>
                 <p>Specialty : <span>{doctor?.speciality}</span></p>
                 <p>Experience : <span>{doctor?.experience} years</span></p>
-                <p>Ratings : <span>{doctor?.average_rating} / 5 </span></p>
+                <p>Ratings : <span>{doctor?.avgrating} / 5 </span></p>
                 <p>Gender : <span>{doctor?.gender}</span></p>
                 <p>Location : <span>{doctor?.location}</span></p>
-                <p>Availability : <span>Monday to Sunday</span> </p>
-                <p>Timings : <span> 9:00 AM - 12:30 PM  and 3:30 PM - 6:00 PM</span></p>
+                <p>Availability : <span>{availability?.working_days}</span> </p>
+                <p>Timings : <span>{availability?.slot_start} - {availability?.slot_end}</span></p>
             </div>
             <div className={styles.btns}>
                 <button className={styles.cardBtn}

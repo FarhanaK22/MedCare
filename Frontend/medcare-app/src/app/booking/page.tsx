@@ -22,19 +22,12 @@ interface DateObject {
   const generateDateObject = (offset: number = 0): DateObject =>{
     const date = new Date();
     date.setDate(date.getDate() + offset);
-
-    return {
-        date :date.getDate(),
-        day : date.toLocaleDateString('en-US',{weekday : "long"}),
-        month : date.toLocaleDateString('en-US',{month : "long"}),
-        year :date.getFullYear(),};
-}
-const generateWeekdates = (weekOffset = 0) => {
-    const datesArray: DateObject[] = [];
-    for (let i = 0; i < 7; i++) {
-      const dayOffset = weekOffset + i;
-      datesArray.push(generateDateObject(dayOffset));
-    }} 
+        return {
+            date :date.getDate(),
+            day : date.toLocaleDateString('en-US',{weekday : "long"}),
+            month : date.toLocaleDateString('en-US',{month : "long"}),
+            year :date.getFullYear(),};
+            }
 
 export default function Slot() {
 //   const [date,setDate] = useState(22);
@@ -47,28 +40,17 @@ export default function Slot() {
   const [selectedTime, setSlotTime] = useState<string>('');
   const [morningSlots,setMorningSlots] =useState<string[]>([])
   const [eveningSlots,setEveningSlots] = useState<string[]>([])
-  
-  
-//      useEffect(()=>{
-//       const generateWeekdates = () =>
-//       {
-//           const datesArray : DateObject[]  = [];
-//           for (let i =0; i<7 ;i++) datesArray.push(generateDateObject(i))
-//           setWeekDates(datesArray);
-//       };
-//       generateWeekdates();
-//   },[]);
+  const [weekdays , setWeekdays] = useState<string[]>(["Monday","Tuesday","Wednesday","Thursday","Friday"])
+  const [weekends,setweekends] = useState<string[]>(["Saturday", "Sunday"])
+ const [workingDays,setworkingDays] = useState<string[]>([])
+
 const generateWeekdates = (weekOffset = 0) => {
     const datesArray: DateObject[] = [];
     for (let i = 0; i < 7; i++) {
       const dayOffset = weekOffset + i;
-      datesArray.push(generateDateObject(dayOffset));
-    }
+      datesArray.push(generateDateObject(dayOffset));}
     setWeekDates(datesArray);
-
-    // Update selectedDate to first day of the week
-    setSelectedDate(generateDateObject(weekOffset));
-  };
+    setSelectedDate(generateDateObject(weekOffset)); };
    const handlePrevMonth = () =>setOffset((prev) => prev - 30);
    const handleNextMonth = () =>setOffset((prev) => prev + 30);
    const handleNext6Days = () => setOffset((prev) => prev + 7)
@@ -84,18 +66,18 @@ const generateWeekdates = (weekOffset = 0) => {
       {  //data from api 
           const Morning = ["9:00" , "9:30" , "10:00" ,"10:30" ,"11:00" ,"11:30","12:00","12:30"]
           const Evening = ["3:00", "3:30" , "4:00" ,"4:30","5:00","5:30","6:00","6:30"]
-          const Availableslotdata = {
-          morning: ["9:00" , "9:30","12:00"],
-          evening:["3:00", "3:30"  ,"4:30"]}
-  
+          const Availableslotdata = {morning: ["9:00" , "9:30","12:00"], evening:["3:00", "3:30"  ,"4:30"]}
+          setworkingDays(weekdays)
           setMorningAvailableSlot(Availableslotdata.morning)
           setEveningAvailableSlot(Availableslotdata.evening)
           setEveningSlots(Evening)
           setMorningSlots(Morning)
+          console.log("time "+selectedTime+" days "+workingDays)
       },[selectedTime])
   
-     const handleSlotClick =(time : string)=>{ console.log("time handler reset")
-      setSlotTime(time)};
+     const handleSlotClick =(time : string)=>{
+            setSlotTime(time)
+            };
 
   return (
     <div className={styles.slot_div}>
@@ -143,7 +125,8 @@ const generateWeekdates = (weekOffset = 0) => {
                                   selectedDate.year === item.year ?
                                   styles.selected_btn : ""
                               }
-                              `} >
+                              `}     disabled={!workingDays.includes(item.day)}
+                              >
                                   <p>{item.day.slice(0,3)}</p>
                                   <div className={styles.date}>
                                       <p>{item.date }</p>
@@ -154,65 +137,59 @@ const generateWeekdates = (weekOffset = 0) => {
                   </div>
                   <Image  onClick={handleNext6Days} src={right} alt="right-arrow" width={25} height={23} className={styles.right_date} />
               </div>
-      
-
       {/* ...................Times ..................... */}
              <div className={styles.slot_session} id="slot_morning">
-              
-        <div>
-            {/* morning */}
-            <div className={styles.session}>
-                <div className={styles.session_head} >
-                    <div className={styles.session_name}>
-                        <Image src={morning} alt="morning" width={23} height={21} />
-                        <p>Morning</p>
-                    </div>
-                    <p className={styles.slot_len}>{morningAvailableSlot.length} slots</p>
-                </div>
-                <div className={styles.times} >
-                    {
-                        morningSlots.map((item,index)=>
-                       (
-                           <button key={index}
-                           onClick={()=>handleSlotClick(item)}
-                           className ={`${styles.slot_btn}
-                           ${ selectedTime === item ?
-                               styles.bg_green : ""
-                           } ${!morningAvailableSlot.includes(item) ? styles.bg_gray : ""}
-                           `} 
-                          
-                           disabled={!morningAvailableSlot.includes(item)}
-                           >{item}</button>
-                       ))
-                    }
-                </div>
-            </div>
-            <div className={styles.session}>
-                <div className={styles.session_head}>
-                        <div className={styles.session_name}>
-                            <Image src={afternoon} alt="afternoon" width={32} height={21} />
-                            <p>Afternoon</p>
+                <div>
+                    {/* morning */}
+                    <div className={styles.session}>
+                        <div className={styles.session_head} >
+                            <div className={styles.session_name}>
+                                <Image src={morning} alt="morning" width={23} height={21} />
+                                <p>Morning</p>
+                            </div>
+                            <p className={styles.slot_len}>{morningAvailableSlot.length} slots</p>
                         </div>
-                        <p className={styles.slot_len}>{eveningAvailableSlot.length} slots</p>
+                        <div className={styles.times} >
+                            {
+                                morningSlots.map((item,index)=>
+                            (
+                                <button key={index}
+                                onClick={()=>handleSlotClick(item)}
+                                className ={`${styles.slot_btn}
+                                ${ selectedTime === item ?
+                                    styles.bg_green : ""
+                                } ${!morningAvailableSlot.includes(item) ? styles.bg_gray : ""}
+                                `} 
+                                
+                                disabled={!morningAvailableSlot.includes(item)}
+                                >{item}</button>
+                            ))
+                            }
+                        </div>
                     </div>
-                    <div className={styles.times} >
-                        {
-                             eveningSlots.map((item,index)=>
-                                (
-                                    <button key={index}
-                                    onClick={()=>handleSlotClick(item)}
-                                    className ={`${styles.slot_btn}
-                                    ${ selectedTime === item ?
-                                        styles.bg_green : ""
-                                    } ${!eveningAvailableSlot.includes(item) ? styles.bg_gray : ""}
-                                    `} 
-                                    disabled={!eveningAvailableSlot.includes(item)}
-                                    >{item}</button>
-                                ))
-                        }
+                    <div className={styles.session}>
+                        <div className={styles.session_head}>
+                                <div className={styles.session_name}>
+                                    <Image src={afternoon} alt="afternoon" width={32} height={21} />
+                                    <p>Afternoon</p>
+                                </div>
+                                <p className={styles.slot_len}>{eveningAvailableSlot.length} slots</p>
+                            </div>
+                            <div className={styles.times} >
+                                {eveningSlots.map((item,index)=>
+                                        (   <button key={index}
+                                            onClick={()=>handleSlotClick(item)}
+                                            className ={`${styles.slot_btn}
+                                            ${ selectedTime === item ?
+                                                styles.bg_green : ""
+                                            } ${!eveningAvailableSlot.includes(item) ? styles.bg_gray : ""}
+                                            `} 
+                                            disabled={!eveningAvailableSlot.includes(item)}
+                                            >{item}</button>
+                                        ))}
+                            </div>
                     </div>
-            </div>
-        </div>
+                </div>
              </div>
              <button className={styles.next_btn} >Next</button>
           </div>

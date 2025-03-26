@@ -21,7 +21,7 @@ interface doctorFilter {
 interface doctorType {
     doctor_id : number,
     experience : number,
-    average_rating : number,
+    avgrating : number,
     location: string,
     name : string,
     speciality : string,
@@ -290,10 +290,10 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
                 </div>
                 <div className={styles.info}>
                     <p>Ratings:</p>
-                    {Array.from({ length: doc.average_rating }).map((_, i) => (
+                    {Array.from({ length: doc.avgrating }).map((_, i) => (
                     <Image key={`star-${i}`} src={star} alt="star" height={17.5} width={17.5} />
                     ))}
-                    {Array.from({ length: 5 - doc.average_rating }).map((_, i) => (
+                    {Array.from({ length: 5 - doc.avgrating }).map((_, i) => (
                     <Image key={`blankstar-${i}`} src={blankstar} alt="blankstar" height={17.5} width={17.5} />
                     ))}
                 </div>

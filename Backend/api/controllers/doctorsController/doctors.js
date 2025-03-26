@@ -1,56 +1,18 @@
-const { response, json } = require("express");
-const pool = require("../../db/index.js")
 
-const doctorsData = async(req,res) =>
-{
-    try {
-        const result = await pool.query("SELECT * FROM doctors" ,[]);
-        console.log("query",result)
-        res.send(JSON.stringify(result.rows))
-        return {
-            success : true,
-            data : result.rows
-        }
-    }
-    catch(err)
-    {
-        console.log("error" ,err)
-        return {
-            success : false,
-            error : err ,
-            
-        }
-    }
-}
-const calculateAverageRating = async (doctor_id) => {
-  try {
-    const query = `
-      SELECT ROUND(AVG(rating)) AS average_rating
-      FROM review
-      WHERE doctor_id = $1
-    `;
-    const values = [doctor_id];
-    const result = await pool.query(query, values);
-    return result.rows[0].average_rating || 0;
-  } catch (err) {
-    console.error("Error calculating average rating:", err);
-    throw err; // Re-throw the error to handle it in the calling function
-  }
-};
+const pool = require("../../db/index.js")
 
 const filterDoctors = async (req, res) => {
   const { rating, experience, gender , searchQuery = "", page = 1} = req.query;
 
   try {
     // Base query
-    let query = "SELECT * FROM doctors WHERE 1=1";
+    let query = "SELECT * FROM view_doctor WHERE 1=1";
     const queryParams = [];
 
-    // Add filters dynamically
-    // if (rating && rating !== "all") {
-    //   queryParams.push(rating);
-    //   query += ` AND rating = $${queryParams.length}`;
-    // }
+    if (rating && rating !== "all") {
+      queryParams.push(rating);
+      query += ` AND avgrating  = $${queryParams.length}`;
+    }
 
     if (experience && experience !== "all") {
       const [minExp, maxExp] = experience.split("-").map(Number);
@@ -68,41 +30,17 @@ const filterDoctors = async (req, res) => {
     }
 
     // Pagination logic
-    const limit = 6; // Number of records per page
+    const limit = 6;
     const offset = (page - 1) * limit;
     query += ` LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
     queryParams.push(limit, offset);
-    // Execute the query
+
     const result = await pool.query(query, queryParams);
-    // console.log("Query Result:", result.rows);
+    console.log("Query Result:", result.rows);
     const doctors = result.rows
-    const data = []
-     for (const doctor of doctors) {
-      averageRating = await calculateAverageRating(doctor.doctor_id);
-      doctor.average_rating = averageRating
-    if (!rating || rating === "5" || averageRating == parseInt(rating)) {
-      data.push(doctor);
-    }    }
-    res.status(200).json(data);
+    res.status(200).json(doctors);
   } catch (err) {
     console.error("Error fetching doctors:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-}
-
-const search_doctor = async (req, res) => {
-  const { query } = req.params;
-  try {
-    const sqlQuery = `
-      SELECT * FROM doctors
-      WHERE LOWER(name) LIKE LOWER($1)
-      OR LOWER(speciality) LIKE LOWER($1)
-    `;
-    const values = [`%${query}%`];
-    const result = await pool.query(sqlQuery, values);
-    res.status(200).json(result.rows);
-  } catch (err) {
-    console.error("Error searching for doctors:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
@@ -110,20 +48,43 @@ const search_doctor = async (req, res) => {
 const doctorID = async (req, res) => {
   const { doctor_id } = req.params;
   try {
-    const query = "SELECT * FROM doctors WHERE doctor_id = $1";
+    const query = "SELECT * FROM view_doctor WHERE doctor_id = $1";
     const values = [doctor_id];
     const result = await pool.query(query, values);
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Doctor not found" });
     }
-    const doctorData =result.rows[0];
-    averageRating = await calculateAverageRating(doctorData.doctor_id);
-    doctorData.average_rating = averageRating
-    
     res.status(200).json(result.rows[0]); 
   } catch (err) {
     console.error("Error fetching doctor details:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
-module.exports = {doctorsData , filterDoctors ,search_doctor ,doctorID}
+
+const availableSlots = async(req,res)=>
+{
+
+}
+
+const doctorAvailability = async(req,res)=>
+{
+  const { doctor_id } = req.params;
+  try {
+    // Query to get available slots for the doctor
+    const query = `
+      SELECT da.working_days, da.slot_start, da.slot_end
+      FROM doctor_availability da
+      WHERE da.doctor_id = $1
+    `;
+    const result = await pool.query(query, [doctor_id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No available slots found for this doctor.' });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error fetching availability:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+module.exports = { filterDoctors  ,doctorID  , availableSlots ,doctorAvailability}
