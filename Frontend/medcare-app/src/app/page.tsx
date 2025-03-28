@@ -12,7 +12,7 @@ export default function Home() {
     <div className={styles.page_div}>
         <div className={styles.title_container}>
           <h1 className={styles.title}>Health in Your Hands.</h1>
-          <p>Take control of your healthcare with CareMate. Book appointments with ease, explore health blogs, and stay on top of your well-being, all in one place.
+          <p>Take control of your healthcare with MedCare. Book appointments with ease, explore health blogs, and stay on top of your well-being, all in one place.
           </p>
           <button className={styles.start_btn} onClick={()=> route.push('/appointments')}>Get Started</button>
         </div>

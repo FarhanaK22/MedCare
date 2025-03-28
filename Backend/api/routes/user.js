@@ -55,7 +55,19 @@ router.post('/logout',logout)
 router.post('/addReview', passport.verifyToken, addReview);
 router.post('/bookSlot', passport.verifyToken, bookSlot);
 router.get('/me', (req, res) => {
-    res.json(req.user); // Return user info from the token
+    res.json(req.user); 
+    const token = req.cookies?.token; // Extract token from cookies
+    if (!token) {
+        return res.status(403).json({ message: "No token found in cookies" });
+    }
+
+    jwt.verify(token, "secret", (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: "Invalid or expired token" });
+        }
+
+        res.status(200).json({ email: decoded.email, name: decoded.name });
+    });// Return user info from the token
 });
 
 
@@ -85,7 +97,14 @@ router.get(
         failureRedirect: "http://localhost:3000/login",
     }),
     (req, res) => {
-        res.redirect("http://localhost:3000/auth/google/callback");
+        const token = jwt.sign(
+            { email: req.user.email, name: req.user.username }, // Payload
+            "secret", // Secret key from environment variable
+            { expiresIn: "1h" } // Token expiration
+          );
+      
+          console.log("Generated Token:", token);
+        res.redirect(`http://localhost:3000/auth/google/callback?token=${token}`);
     }
 );
 // router.get('/me',(req,res)=>

@@ -1,3 +1,4 @@
+"use client"
 import "./globals.css"
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -6,12 +7,16 @@ import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import { AuthProvider } from "./context/context"; 
 config.autoAddCss = false
+import { usePathname } from 'next/navigation';
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const shouldHideFooter = ["/", "/login", "/register"].includes(pathname);
+  const isBookingRoute = pathname.startsWith("/booking/");
   return (<AuthProvider>
     <html lang="en">
        <Head>
@@ -26,8 +31,7 @@ export default function RootLayout({
       
         <Header/>
         <main className="main">{children}</main>
-        {/* <Footer/> */}
-       
+        {!shouldHideFooter && !isBookingRoute && <Footer />}
       </body>
     </html> </AuthProvider>
   );

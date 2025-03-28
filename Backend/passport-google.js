@@ -15,20 +15,23 @@ passport.use(
     async function (request, accessToken, refreshToken, profile, done) {
       try {
         // Check if the user already exists in the database
-        const email = profile.emails[0].value; // Get the user's email from the profile
+        const email = profile.emails[0].value; 
+        const displayName = profile.displayName;// Get the user's email from the profile
         const checkUser = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
 
         if (checkUser.rows.length > 0) {
+          user = checkUser.rows[0];
           // User exists, return the user
-          return done(null, checkUser.rows[0]);
+          // return done(null, checkUser.rows[0]);
         } else {
           // User does not exist, create a new user
           const newUser = await pool.query(
             `INSERT INTO users (username, email) VALUES ($1, $2) RETURNING user_id, username, email`,
-            [profile.displayName, email]
+            [displayName, email]
           );
-          return done(null, newUser.rows[0]);
-        }
+          // return done(null, newUser.rows[0]);
+          user = newUser.rows[0];  
+        } return done(null, user);
       } catch (err) {
         console.error("Error during Google OAuth:", err);
         return done(err, null);

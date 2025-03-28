@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/context";
+import { jwtDecode }  from "jwt-decode";
 
 export default function GoogleCallback() {
     const router = useRouter();
@@ -11,27 +12,25 @@ export default function GoogleCallback() {
     useEffect(() => {
         const handleCallback = async () => {
             try {
-                // Get the user data from the backend
-                const response = await fetch(
-                    "http://localhost:3001/user/me",
-                    {
-                        credentials: "include",
-                    }
-                );
+                const urlParams = new URLSearchParams(window.location.search);
+                const token = urlParams.get("token");
 
-                if (!response.ok) {
-                    throw new Error("Failed to get user data");
+                if (!token) {
+                    throw new Error("No token received");
                 }
-
-                const data = await response.json();
-                if (data) {
-                    // Set user data and redirect to home
-                    setUser(data);
-                    setIsAuthenticated(true);
+               
+                // Store the token in local storage or cookies
+                
+                document.cookie = `token=${token}; path=/; secure; samesite=strict`;
+                localStorage.setItem("token", token);
+                    
+                // Decode the token to get user data (optional)
+                const user = jwtDecode(token);
+                console.log(token) // Decode JWT payload safely
+                setUser(user);
+                setIsAuthenticated(true);
                     router.push("/");
-                } else {
-                    throw new Error("No user data received");
-                }
+                
             } catch (error) {
                 console.error("Google callback error:", error);
                 router.push("/login");
@@ -39,7 +38,7 @@ export default function GoogleCallback() {
         };
 
         handleCallback();
-    }, [router, setUser]);
+    }, [router, setUser,setIsAuthenticated]);
 
     return (
         <div

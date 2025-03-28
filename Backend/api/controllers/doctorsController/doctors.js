@@ -92,4 +92,14 @@ const doctorAvailability = async(req,res)=>
   }
 }
 
-module.exports = { filterDoctors  ,doctorID  , availableSlots ,doctorAvailability}
+const reviews =async(req,res)=>
+{
+  try {
+    const result = await pool.query('SELECT * FROM review ORDER BY rating DESC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+module.exports = { filterDoctors,reviews  ,doctorID  , availableSlots ,doctorAvailability}
