@@ -2,7 +2,7 @@
 import React, { useState , useEffect, useContext, useReducer} from "react";
 import "../globals.css"
 import {useAdminContext} from "../context/context"
-import router from 'next/navigation'
+import {useRouter} from 'next/navigation'
 
 interface Appointment {
     appointment_id: string;
@@ -18,10 +18,10 @@ export default function Dashboard ()
     const [appointments, setAppointments] = useState<Appointment[]>([])
     const [isMounted, setIsMounted] = useState(false);
     const {isAdmin, setIsAdmin} = useAdminContext()
-
+  const router = useRouter()
     useEffect(() =>{
             if (!isAdmin) {
-             return;
+             router.push('/')
             }
           setIsMounted(true) 
         }, [isAdmin]);
@@ -55,10 +55,11 @@ export default function Dashboard ()
     )
 
     if(!isMounted)  return (<div className="loading">Loading.....</div>)
-
+      if(!isAdmin) return null
     return (
         <div className="dashboard">
             <h1>Welcome to Admin Dashboard</h1>
+            <p  onClick={()=>setIsAdmin(false)} style={{color:"red",cursor:'pointer'}}>Logout</p>
             <div className="appointments">
             <p>Manage Appointment Booking requests</p>
             <table className="appointments-table">

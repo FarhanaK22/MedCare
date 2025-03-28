@@ -9,7 +9,7 @@ interface AdminContextType {
 const validAdminContext = createContext<AdminContextType  | undefined>(undefined)
 
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [isAdmin, setIsAdmin] = useState<boolean>(true);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
   
   return (
     <validAdminContext.Provider value={{ isAdmin, setIsAdmin }}>

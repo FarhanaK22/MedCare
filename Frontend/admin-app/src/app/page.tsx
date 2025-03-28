@@ -26,22 +26,20 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true); 
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password: adminPassword }),
-      })
+    try{
+      const url = "http://localhost:3001/admin/adminLogin";
+  
+    const response = await fetch(`${url}?apiKey=${adminPassword}`, {
+      method: "post",
+    });
       if (response.ok) {
           setLoggedIn(true);
           setIsAdmin(true)
           router.push("/dashboard");
-        } else{
-          return (<div>Incorrect password</div>)
-        }
+        } 
+        alert("unauthorised")
     } catch (error) {
+      
       console.error("Error during login:", error);
     } finally {
       setIsSubmitting(false);
@@ -56,7 +54,7 @@ export default function Home() {
                 onChange={handlePassword}
                 value={adminPassword}
                 required
-                placeholder="Enter admin password"/>
+                placeholder="Enter admin key"/>
                 <button type="submit" className="login-btn" >Log In</button>
             </form>
         </div>

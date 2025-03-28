@@ -1,12 +1,24 @@
 const pool = require("../../db/index.js")
 
+const validAdminPassword = "admin"
 const adminLogin = async(req,res,next)=>
-{
-    next()
+{  console.log("checking admin")
+        const { apiKey } = req.query;
+        if (!apiKey) {
+          return res.status(400).json({ error: "API key is required" });
+        }
+        console.log("user valid")
+        if (apiKey === validAdminPassword) {
+          res.status(200).json({ message: "Login successful", isAdmin: true });
+          return next()
+          
+        } else {
+          return res.status(401).json({ error: "Incorrect password" });
+        }
 }
 
 const doctorsData = async(req,res) =>
-{
+{ if(!req.isAdmin) return res.send("unauthorised")
     try {
         const result = await pool.query("SELECT * FROM doctors" ,[]);
         console.log("query",result)
