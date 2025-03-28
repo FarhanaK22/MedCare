@@ -1,37 +1,44 @@
 const pool = require("../../db/index.js")
 const bcrypt  =  require("bcrypt")
 const saltRounds = 10
-const passport = require('passport');
 
 const register = async(req,res)=>
-{  const { name, email, password } = req.body;
+{   if (req.isAuthenticated()) return res.status(200).json({ message: "User already logged in. Redirecting to home." });
+ console.log(req.isAuthenticated())
+  const { name, email, password } = req.body;
     try{
         const checkEmail = await pool.query("SELECT * FROM users WHERE email =$1",
             [email,])
         if(checkEmail.rows.length >0)
             return res.status(400).json({ message: "Email already exists. Try logging in." });
-        bcrypt.hash(password,saltRounds,async(err,hash)=>
-        {if(err) console.log("error while hashing",err)
-          const result  = await pool.query( `
-                INSERT INTO users (username, email, password)
-                VALUES ($1, $2, $3) `,[name, email, hash])
-            res.status(201).json({
-                message: "User registered successfully",
-                user: result.rows[0],
-            });
-        })
-        } catch (err) {
-            console.error("Error registering user:", err);
+       
+        const hash = await bcrypt.hash(password, saltRounds);
+        const result = await pool.query(
+          `INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING user_id, username, email`,
+          [name, email, hash]
+        );
+        res.status(201).json({
+          message: "User registered successfully",
+          user: result.rows[0],
+        });
+      }    catch (err) {
+        console.error("Error registering user:", err);
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
 
-// const login = async (req,res)=>
-// {    const {email , password} = req.body
-// }
-
-const addReview = (req,res)=>
+const logout = (req,res)=>
 {
+    // req.logout((err)=>
+    // {
+    //     if(err) return res.status(500).json({message : "logged failed"})
+    //         res.json({message: "logout success"})
+    // })
+    res.status(200).json({ message: "Logout successful. Please delete the token on the client side." });
+  }
+const addReview = (req,res)=>
+{ 
+  res.send(req.body,"you enetered private area")
 }
 
 const bookSlot = (req,res)=>
@@ -39,4 +46,4 @@ const bookSlot = (req,res)=>
 
 }
 
-module.exports = { addReview ,bookSlot ,register}
+module.exports = { addReview ,bookSlot ,register,logout}

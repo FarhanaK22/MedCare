@@ -33,26 +33,34 @@ export default function Doctor()
     const [availability ,setDoctorAvailability]= useState<Availability>()
 
         const url = "http://localhost:3001/doctors/detail";
-        const doctorDetail = async() =>
-        { try{
-            const response = await axios.get(`${url}/${id}`)
-            console.log("Doctors fetched:", response.data);
-            setDoctorDetail(response.data);
-          } catch (err) {
-            console.error("Error fetching doctors using filter:", err);
-          }
-        }  
+        const doctorDetail = async () => {
+            try {
+              const response = await fetch(`${url}/${id}`, {
+                method: "GET",
+                credentials: "include",
+              });
+              const data = await response.json();
+              console.log("Doctors fetched:", data);
+              setDoctorDetail(data);
+            } catch (err) {
+              console.error("Error fetching doctors:", err);
+            }
+          };
         const url2= "http://localhost:3001/doctors/doctorAvailability"
-        const doctorAvailability= async() =>
-            { try{
-                const response = await axios.get(`${url2}/${id}`)
-                console.log("Doctors availability:", response.data);
-                setDoctorAvailability(response.data);
-                console.log(availability)
-              } catch (err) {
-                console.error("Error fetching doctors using filter:", err);
-              }
-            } 
+        const doctorAvailability = async () => {
+            try {
+              const response = await fetch(`${url2}/${id}`, {
+                method: "GET",
+                credentials: "include", 
+              });
+              const data = await response.json();
+              console.log("Doctors availability:", data);
+              setDoctorAvailability(data);
+              console.log(availability);
+            } catch (err) {
+              console.error("Error fetching doctors availability:", err);
+            }
+          };
     useEffect(() => {
         if (id) {
             doctorAvailability();
