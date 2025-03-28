@@ -9,7 +9,7 @@ const admin = require("./api/routes/admin.js");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const passport = require("passport");
-const passport_local = require("./passport-local.js");
+// const passport_local = require("./passport-local.js");
 
 // Remove session-based authentication
 // app.use(session({
@@ -36,12 +36,13 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+const cookieParser = require("cookie-parser"); // Import cookie-parser
 
+app.use(cookieParser());
 // Define routes
 app.use('/doctors', doctorRoutes);
 app.use('/admin', admin);
 app.use('/user', userRoutes);
-
 app.listen(port, () => {
     console.log(`http://localhost:${port}`);
 });

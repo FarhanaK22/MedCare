@@ -1,11 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import styles from "../login_register.module.css";
 import Image from "next/image";
 import email_pic from "../../../public/images/At-sign.png";
 import pass from "../../../public/images/Lock.png";
 import id from "../../../public/images/id.png"
 import Link from "next/link";
+import { useAuth } from "../context/context";
+import { useRouter } from "next/navigation"
 import axios from "axios";
 
 export default function Register() {
@@ -15,6 +17,14 @@ export default function Register() {
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
+  const { isAuthenticated } = useAuth();
+  const router = useRouter(); // Initialize router
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/"); // Redirect to home page
+    }
+  }, [isAuthenticated, router]);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,16 +43,16 @@ export default function Register() {
         setEmail("");
         setPassword("");
       } else {
-        console.error("Unexpected response:", response);
-        console.log("Registration failed. Please try again.");
+        // console.error("Unexpected response:", response);
+        alert("Registration failed. Please try again.");
       }
     } catch (err: any) {
       if (err.response) {
-        console.error("Error response:", err.response.data);
-        console.log(err.response.data.message || "Registration failed. Please check your details.");
+        // console.error("Error response:", err.response.data);
+        alert(err.response.data.message || "Registration failed. Please check your details.");
       } else {
-        console.error("Error:", err.message);
-        console.log("An error occurred. Please try again later.");
+        // console.error("Error:", err.message);
+        alert("An error occurred. Please try again later.");
       }
     }
   };

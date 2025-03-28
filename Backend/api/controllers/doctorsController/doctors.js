@@ -46,6 +46,7 @@ const filterDoctors = async (req, res) => {
 }
 
 const doctorID = async (req, res) => {
+  console.log("inside doctor")
   const { doctor_id } = req.params;
   try {
     const query = "SELECT * FROM view_doctor WHERE doctor_id = $1";

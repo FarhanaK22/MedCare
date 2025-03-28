@@ -26,16 +26,23 @@ const register = async(req,res)=>
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
+const logout = (req, res) => {
+  try {
+    // Clear the authentication token cookie
+    res.clearCookie("token"); // Clear the JWT token cookie
 
-const logout = (req,res)=>
-{
-    // req.logout((err)=>
-    // {
-    //     if(err) return res.status(500).json({message : "logged failed"})
-    //         res.json({message: "logout success"})
-    // })
-    res.status(200).json({ message: "Logout successful. Please delete the token on the client side." });
+    // Clear the session if it exists
+    if (req.session) {
+      req.session = null;
+      console.log("user logout")
+    }
+
+    return res.status(200).json({ message: "Logout successful. Please delete the token on the client side." });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({ message: "Logout failed" });
   }
+};
 const addReview = (req,res)=>
 { 
   res.send(req.body,"you enetered private area")

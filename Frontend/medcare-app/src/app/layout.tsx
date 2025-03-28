@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import Head from "next/head"; 
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
+import { AuthProvider } from "./context/context"; 
 config.autoAddCss = false
 
 export default function RootLayout({
@@ -11,7 +12,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
+  return (<AuthProvider>
     <html lang="en">
        <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,10 +23,12 @@ export default function RootLayout({
         />
       </Head>
       <body>
+      
         <Header/>
         <main className="main">{children}</main>
         {/* <Footer/> */}
+       
       </body>
-    </html>
+    </html> </AuthProvider>
   );
 }

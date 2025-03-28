@@ -1,11 +1,19 @@
+import React from "react";
 
-import React from "react"
+export default function Blog() {
+  // Define internal CSS as a JavaScript object
+  const styles = {
+    container: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  };
 
-export default  function Blog()
-{
-    return (
-        <div>
-            <h1>This page is under development!</h1>
-        </div>
-    )
+  return (
+    <div >
+      
+    </div>
+  );
 }

@@ -85,11 +85,13 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
             const response = await axios.get(
               `${url}?rating=${rating}&experience=${experience}&gender=${gender}&searchQuery=${search}&page=${pageno}`
             );
-            console.log("Doctors fetched:", response.data);
+            // console.log("Doctors fetched:", response.data);
             setDoctors(response.data);
           } catch (err) {
-            console.error("Error fetching doctors using filter:", err);
-          }
+            // console.error("Error fetching doctors using filter:", err);
+            setDoctors([]); // Set dummy empty array to doctors in case of error
+            alert("Failed to fetch doctors. Please try again later."); // Show an alert to the user
+            }
         };fetchDoctors();
     },[Filters, search,pageno])
 
@@ -298,7 +300,10 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
                     ))}
                 </div>
                 <button className={styles.cardBtn}
-                onClick={()=>handleBooking(doc)}
+                onClick={(e) => {
+                    e.stopPropagation(); // Prevent card click event from firing
+                    handleBooking(doc); // Navigate to booking page
+                  }}
                 >Book Appointment</button>
             </div>
          )}

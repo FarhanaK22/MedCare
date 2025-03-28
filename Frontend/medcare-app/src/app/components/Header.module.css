@@ -72,6 +72,17 @@
     margin: 0 20px;
     cursor: pointer;
 }
+.logout_btn{
+    width: 110;
+    height: 44;
+    padding: 12px 32px;
+    border-radius: 8px;
+    border: 1px solid #E0E8E0;
+    background-color: rgb(209, 70, 70);
+    color: white;
+    margin: 0 20px;
+    cursor: pointer;
+}
 .register_btn{
     width: 131;
     height: 44;

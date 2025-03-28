@@ -6,6 +6,7 @@ import Image from "next/image";
 import pic  from "../../../../public/images/doctor.png"
 import { useRouter ,useParams } from "next/navigation";
 import axios from "axios";
+import { useAuth } from "../../context/context"
 
 interface Doctor{
     id: number,
@@ -27,6 +28,7 @@ export default function Doctor()
 {   const params = useParams();
     const router = useRouter()
     const { id } = params;
+    const { isAuthenticated, checkAuth } = useAuth()
     const [isMounted,setIsMounted] = useState<boolean>(false)
     const [doctor, setDoctorDetail ] = useState<Doctor>()
     const [review, setReview] = useState<boolean>(false)
@@ -35,41 +37,64 @@ export default function Doctor()
         const url = "http://localhost:3001/doctors/detail";
         const doctorDetail = async () => {
             try {
+              const token = localStorage.getItem("token"); // Retrieve the token from localStorage
               const response = await fetch(`${url}/${id}`, {
                 method: "GET",
                 credentials: "include",
+                headers: {
+                  "Authorization": `Bearer ${token}`, // Add the token to the Authorization header
+                },
               });
+
+              if (!response.ok) {
+                throw new Error("Failed to fetch doctor details");
+              }
+
               const data = await response.json();
               console.log("Doctors fetched:", data);
               setDoctorDetail(data);
             } catch (err) {
-              console.error("Error fetching doctors:", err);
+              console.error("Error fetching doctor details:", err);
             }
           };
         const url2= "http://localhost:3001/doctors/doctorAvailability"
         const doctorAvailability = async () => {
             try {
+              const token = localStorage.getItem("token"); // Retrieve the token from localStorage
               const response = await fetch(`${url2}/${id}`, {
                 method: "GET",
-                credentials: "include", 
+                credentials: "include",
+                headers: {
+                  "Authorization": `Bearer ${token}`, // Add the token to the Authorization header
+                },
               });
+
+              if (!response.ok) {
+                throw new Error("Failed to fetch doctor availability");
+              }
+
               const data = await response.json();
               console.log("Doctors availability:", data);
               setDoctorAvailability(data);
               console.log(availability);
             } catch (err) {
-              console.error("Error fetching doctors availability:", err);
+              console.error("Error fetching doctor availability:", err);
             }
           };
+          useEffect(() => {
+            if (!isAuthenticated) {
+              return router.push("/login"); // Redirect to login page
+            }
+            setIsMounted(true)
+          }, [isAuthenticated, router,params]);
     useEffect(() => {
         if (id) {
             doctorAvailability();
             doctorDetail();
         }
         }, [id]);
-      useEffect(()=>setIsMounted(true),[router,params])
     
-    const handleBooking = () :void=> router.push(`/booking`)
+    const handleBooking = () :void=> router.push(`/booking/${doctor?.id}`)
     const handleReview = (e: React.MouseEvent<HTMLButtonElement>) => {setReview(!review)
         e.preventDefault()
      }

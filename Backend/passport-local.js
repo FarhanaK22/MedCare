@@ -4,9 +4,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken"); // Import JWT
 const pool = require("./api/db/index.js");
 
-const authConfig = {
-    secret: "your_jwt_secret_key", // Replace with your secret key
-};
+// const authConfig = {
+//     secret: "your_jwt_secret_key", // Replace with your secret key
+// };
 
 passport.use(new Strategy({ usernameField: "email" }, async function verify(email, password, cb) {
     try {
@@ -27,7 +27,7 @@ passport.use(new Strategy({ usernameField: "email" }, async function verify(emai
 
             if (result) {
                 // Generate JWT token
-                const token = jwt.sign({ id: user.user_id }, authConfig.secret, {
+                const token = jwt.sign({ id: user.user_id },"secret", {
                     expiresIn: 86400, // 24 hours
                 });
                 user.token = token; // Attach token to the user object
@@ -43,12 +43,19 @@ passport.use(new Strategy({ usernameField: "email" }, async function verify(emai
 }));
 
 passport.verifyToken = (req, res, next) => {
-    const token = req.headers["authorization"];
+    const authHeader = req.headers["authorization"];
+    console.log("inside verify")
+    if (!authHeader) {
+        return res.status(403).json({ message: "No token provided" });
+    }
+  
+    // Extract token from "Bearer <token>" format
+    const token = authHeader.split(" ")[1]; 
     if (!token) {
         return res.status(403).json({ message: "No token provided" });
     }
 
-    jwt.verify(token, authConfig.secret, (err, decoded) => {
+    jwt.verify(token, "secret", (err, decoded) => {
         if (err) {
             return res.status(401).json({ message: "Unauthorized: Invalid token" });
         }
@@ -78,16 +85,5 @@ passport.deserializeUser(async (id, cb) => {
     }
 });
 
-passport.checkAuthentication = function (req, res, next) {
-    console.log(req.user);
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    if (req.xhr || req.headers.accept.indexOf("json") > -1) {
-        return res.status(401).json({ message: "Unauthorized, please login" });
-    } else {
-        return res.redirect("http://localhost:3000/login");
-    }
-};
 
 module.exports = passport;
