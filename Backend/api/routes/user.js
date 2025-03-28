@@ -54,7 +54,7 @@ const passport = require("../../passport-local.js");
 router.post('/logout',logout)
 router.post('/addReview', passport.verifyToken, addReview);
 router.post('/bookSlot', passport.verifyToken, bookSlot);
-router.get('/me', passport.verifyToken, (req, res) => {
+router.get('/me', (req, res) => {
     res.json(req.user); // Return user info from the token
 });
 

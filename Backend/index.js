@@ -9,18 +9,19 @@ const admin = require("./api/routes/admin.js");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const passport = require("passport");
-// const passport_local = require("./passport-local.js");
+const passport_local = require("./passport-local.js");
+const session = require("express-session");
 
 // Remove session-based authentication
-// app.use(session({
-//     secret : "USERLOGSESSION",
-//     resave:false,
-//     saveUninitialized :true,
-//     cookie: {
-//         maxAge: 1000 * 60 * 60 * 24 * 7
-//       }
-// }));
-// app.use(passport.session());
+app.use(session({
+    secret : "USERLOGSESSION",
+    resave:false,
+    saveUninitialized :true,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7
+      }
+}));
+app.use(passport.session());
 
 app.use(passport.initialize());
 

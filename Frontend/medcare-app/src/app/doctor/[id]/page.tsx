@@ -85,7 +85,6 @@ export default function Doctor()
             if (!isAuthenticated) {
               return router.push("/login"); // Redirect to login page
             }
-            setIsMounted(true)
           }, [isAuthenticated, router,params]);
     useEffect(() => {
         if (id) {

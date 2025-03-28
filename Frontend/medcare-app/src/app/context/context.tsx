@@ -11,10 +11,7 @@ interface AuthContextType {
   checkAuth: () => Promise<void>;
 }
 
-// Create the AuthContext
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// AuthProvider component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any>(null);

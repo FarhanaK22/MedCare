@@ -47,9 +47,8 @@ export default function Slot() {
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/login");
-    } else {
-      setIsMounted(true);
-    }
+    } 
+ 
   }, [isAuthenticated, router]);
 
   useEffect(() => {
