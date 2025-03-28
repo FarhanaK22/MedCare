@@ -85,12 +85,17 @@ export default function Doctor()
             if (!isAuthenticated) {
               return router.push("/login"); // Redirect to login page
             }
+            setIsMounted(true)
           }, [isAuthenticated, router,params]);
     useEffect(() => {
-        if (id) {
-            doctorAvailability();
-            doctorDetail();
+      async function getDoctor() {
+        if (id && isAuthenticated) {
+            await doctorAvailability();
+            await doctorDetail();
         }
+      }
+
+      getDoctor();
         }, [id]);
     
     const handleBooking = () :void=> router.push(`/booking/${doctor?.id}`)
@@ -137,7 +142,8 @@ export default function Doctor()
                                     <button type="submit" className={styles.reviewBtn}>Submit</button>
                                 </div>
                             </form>
-                        </div> : <div></div>
+                        </div> : <div>
+                  </div>
             }
         </div>
     )

@@ -272,7 +272,7 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
         <div className={styles.cards}>
            {doctors.length<=0 ? <div style={{color:"red"}}>No results found....</div> :
            doctors.map((doc)=>
-                <div  key = {doc.doctor_id}className={styles.card}  onClick={()=>handleDoctor(doc)}>
+                <div  key={doc.doctor_id} className={styles.card}  onClick={()=>handleDoctor(doc)}>
                  <Image
                 src={doctor}
                 alt="doctor_image"

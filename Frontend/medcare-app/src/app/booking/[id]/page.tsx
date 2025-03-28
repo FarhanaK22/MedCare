@@ -48,12 +48,19 @@ export default function Slot() {
     if (!isAuthenticated) {
       router.push("/login");
     } 
- 
   }, [isAuthenticated, router]);
 
   useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+    async function authorise() {
+      await checkAuth();
+
+      if(isAuthenticated) {
+        setIsMounted(true);
+      }
+    }
+
+    authorise();
+  }, []);
 
   const generateWeekdates = (weekOffset = 0) => {
     const datesArray: DateObject[] = [];

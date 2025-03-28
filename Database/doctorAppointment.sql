@@ -11,14 +11,12 @@ CREATE TABLE doctors (
     gender VARCHAR(10) CHECK (gender IN ('Male', 'Female')) NOT NULL
 );
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    user_id SERIAL PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     email VARCHAR(100) UNIQUE NOT NULL,
     password TEXT DEFAULT NULL
 );
-ALTER TABLE users 
-RENAME id to user_id
 select * from users
 CREATE TABLE review (
     rating_id SERIAL PRIMARY KEY,
@@ -27,9 +25,8 @@ CREATE TABLE review (
     doctor_id INT NOT NULL,
     user_id INT NOT NULL,
     FOREIGN KEY (doctor_id) REFERENCES doctors (doctor_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
-
 INSERT INTO users (username, email)
 VALUES
 ('fake_user1', 'fake1@gmail.com'),
@@ -65,7 +62,6 @@ VALUES
 (1, 'Wait time was too long.', 12, 1),
 (5, 'Great knowledge and expertise.', 13, 2);
 
-
 select * from review
 
 
@@ -86,8 +82,6 @@ VALUES
 (4, NULL, 5, 1),
 (5, NULL, 6, 1),
 (3, NULL, 7, 1);
-(5, NULL, 1, 1),
-(5, NULL, 1, 2);
 
 -- Doctor 3: Dr. Ava Smith
 INSERT INTO review (rating, comment, doctor_id, user_id)
@@ -96,9 +90,10 @@ VALUES
 (5, NULL, 1, 1),
 (5, NULL, 1, 2);
 
-
+drop view view_doctor
 CREATE OR REPLACE VIEW view_doctor AS
 SELECT 
+	d.doctor_id,
     d.name,
     d.speciality,
     d.degree,
@@ -112,7 +107,7 @@ LEFT JOIN
     review r ON d.doctor_id = r.doctor_id
 GROUP BY 
     d.doctor_id, d.name, d.speciality, d.degree, d.experience, d.gender, d.location;
-select * from view_doctor
+select * from doctors
 
 CREATE TABLE slots (
     slot_id SERIAL PRIMARY KEY,
