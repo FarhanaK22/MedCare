@@ -27,7 +27,7 @@ passport.use(new Strategy({ usernameField: "email" }, async function verify(emai
 
             if (result) {
                 // Generate JWT token
-                const token = jwt.sign({ id: user.user_id },"secret", {
+                const token = jwt.sign({ id: user.user_id , email: user.email, name: user.username  },"secret", {
                     expiresIn: 86400, // 24 hours
                 });
                 user.token = token; // Attach token to the user object

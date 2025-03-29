@@ -10,7 +10,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
 import{useRouter} from "next/navigation"
 import { useAuth } from "../context/context";
-
+import { jwtDecode } from "jwt-decode";
 export default function Login() {
   const [ismounted, setIsMounted] = useState<boolean>(false)
   const [email,setEmail] = useState<string>('')
@@ -48,9 +48,11 @@ export default function Login() {
 
       const data = await response.json();
       localStorage.setItem("token", data.token); // Save token to localStorage
-      setIsAuthenticated(true); // Update authentication state immediately
-      setUser(data.user); // Set the user data
-      router.push("/"); // Redirect to the home page
+      setIsAuthenticated(true); // Update authentication state immediately// Set the user data
+      const user = jwtDecode(data.token);
+      console.log(" user", user)
+      setUser(user); 
+      router.push("/");
     } catch (error) {
       // console.error("Error during login:", error);
       alert("An error occurred during login. Please try again.");

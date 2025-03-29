@@ -1,54 +1,39 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "../../context/context";
+import {useAuth } from "../../context/context";
 import styles from "../WeekDates.module.css";
 import Image from "next/image";
 import right from "../../../../public/images/rightarrow.png";
 import left from "../../../../public/images/leftarrow.png";
 import morning from "../../../../public/images/sun.png";
 import afternoon from "../../../../public/images/sunset.png";
-
-interface DateObject {
-  date: number;
-  day: string;
-  month: string;
-  year: number;
-}
-
-const generateDateObject = (offset: number = 0): DateObject => {
-  const date = new Date();
-  date.setDate(date.getDate() + offset);
-  return {
-    date: date.getDate(),
-    day: date.toLocaleDateString("en-US", { weekday: "long" }),
-    month: date.toLocaleDateString("en-US", { month: "long" }),
-    year: date.getFullYear(),
-  };
-};
+import {DateObject, SlotType , generateDateObject,convertDatetoString,generateWeekdates}  from "../module"
+import { useRouter ,useParams } from "next/navigation";
 
 export default function Slot() {
   const [isMounted, setIsMounted] = useState(false);
-  const router = useRouter();
+  const params = useParams();
+  const router = useRouter()
+  const { id } = params;
   const [bookingType, setBookingType] = useState("online");
   const [offset, setOffset] = useState<number>(0);
   const [weekDates, setWeekDates] = useState<DateObject[]>([]);
-  const [selectedDate, setSelectedDate] = useState<DateObject>(generateDateObject());
+  const [selectedDate, setSelectedDate] = useState<DateObject>();
   const [morningAvailableSlot, setMorningAvailableSlot] = useState<string[]>([]);
   const [eveningAvailableSlot, setEveningAvailableSlot] = useState<string[]>([]);
   const [selectedTime, setSlotTime] = useState<string>("");
   const [morningSlots, setMorningSlots] = useState<string[]>([]);
   const [eveningSlots, setEveningSlots] = useState<string[]>([]);
-  const [weekdays, setWeekdays] = useState<string[]>(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]);
-  const [weekends, setweekends] = useState<string[]>(["Saturday", "Sunday"]);
-  const [workingDays, setworkingDays] = useState<string[]>([]);
-  const { isAuthenticated, checkAuth } = useAuth();
-
+  const { isAuthenticated, checkAuth ,user} = useAuth();
+  const weekdays : string[]= ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+  const weekends : string[]=["Saturday", "Sunday"]
+  const url = "http://localhost:3001/doctors"
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/login");
     } 
-  }, [isAuthenticated, router]);
+    console.log("user booking ....",user)
+  }, [isAuthenticated, router,user]);
 
   useEffect(() => {
     async function authorise() {
@@ -56,22 +41,62 @@ export default function Slot() {
 
       if(isAuthenticated) {
         setIsMounted(true);
-      }
-    }
-
-    authorise();
+      }}
+authorise();
   }, []);
-
-  const generateWeekdates = (weekOffset = 0) => {
-    const datesArray: DateObject[] = [];
-    for (let i = 0; i < 7; i++) {
-      const dayOffset = weekOffset + i;
-      datesArray.push(generateDateObject(dayOffset));
-    }
-    setWeekDates(datesArray);
-    setSelectedDate(generateDateObject(weekOffset));
-  };
-
+  
+  useEffect(() => {
+    const datesarray =  generateWeekdates(offset);
+    setWeekDates(datesarray);
+   }, [offset]);
+ 
+   useEffect(() => {
+     var slots : SlotType[]
+     const getSlots = async () => {
+       try {
+         const response = await fetch(`${url}/allSlots`);
+         slots = await response.json()
+        console.log(slots);
+         const morning = slots
+           .filter((item) => item.slot_id <= 8)
+           .map((item) => convertDatetoString(item.slot_time));
+         const evening = slots
+           .filter((item) => item.slot_id > 8)
+           .map((item) => convertDatetoString(item.slot_time));
+         setMorningSlots(morning);
+         setEveningSlots(evening);
+       } catch (error) {
+         console.error('Error fetching slots:', error);
+       }}
+ 
+   const getDocSlots = async () =>
+   { try {
+     const token = localStorage.getItem("token");
+     const appointmentDate = '2025-03-29';
+     const requestUrl = `${url}/doctorSlots/${id}?appointment_date=${appointmentDate}`;
+     const response = await fetch(requestUrl, {
+       method: 'GET',
+       credentials: "include",
+       headers: {
+         "Authorization": `Bearer ${token}`, // Add the token to the Authorization header
+       },
+     });
+      slots = await response.json();
+     console.log("doctors ",slots);
+     const morning = slots
+           .filter((item) => item.slot_id <= 8)
+           .map((item) => convertDatetoString(item.slot_time));
+         const evening = slots
+           .filter((item) => item.slot_id > 8)
+           .map((item) => convertDatetoString(item.slot_time));
+         setMorningAvailableSlot(morning);
+         setEveningAvailableSlot(evening);
+   } catch (error) {
+     console.error('Error fetching slots:', error);
+   }}
+   getSlots()
+   getDocSlots()
+ }, []);
   const handlePrevMonth = () => setOffset((prev) => prev - 30);
   const handleNextMonth = () => setOffset((prev) => prev + 30);
   const handleNext6Days = () => setOffset((prev) => prev + 7);
@@ -80,27 +105,9 @@ export default function Slot() {
     setSelectedDate(dateObj);
     console.log("Selected Date:", dateObj);
   };
-
-  useEffect(() => {
-    generateWeekdates(offset);
-  }, [offset]);
-
-  useEffect(() => {
-    const Morning = ["9:00", "9:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30"];
-    const Evening = ["3:00", "3:30", "4:00", "4:30", "5:00", "5:30", "6:00", "6:30"];
-    const Availableslotdata = { morning: ["9:00", "9:30", "12:00"], evening: ["3:00", "3:30", "4:30"] };
-
-    if (morningSlots.length === 0 && eveningSlots.length === 0) {
-      setworkingDays(weekdays);
-      setMorningAvailableSlot(Availableslotdata.morning);
-      setEveningAvailableSlot(Availableslotdata.evening);
-      setEveningSlots(Evening);
-      setMorningSlots(Morning);
-    }
-  }, [weekdays, morningSlots, eveningSlots]);
-
   const handleSlotClick = (time: string) => {
     setSlotTime(time);
+    console.log("Selected Date:",time ,{bookingType});
   };
 
   if (!isMounted) return <div>Loading...</div>;
@@ -141,15 +148,15 @@ export default function Slot() {
           <div className={styles.dates_container}>
             <div className={styles.month}>
               <Image
-                onClick={generateDateObject().month !== selectedDate.month || offset ? handlePrevMonth : undefined}
+                onClick={generateDateObject().month !== selectedDate?.month || offset ? handlePrevMonth : undefined}
                 src={left}
                 alt="left-arrow"
                 width={25}
                 height={23}
               />
               <div className={styles.date}>
-                <p>{selectedDate.month}</p>
-                <p>{selectedDate.year}</p>
+                <p>{selectedDate?.month}</p>
+                <p>{selectedDate?.year}</p>
               </div>
               <Image onClick={handleNextMonth} src={right} alt="right-arrow" width={25} height={23} />
             </div>
@@ -159,13 +166,14 @@ export default function Slot() {
                   key={index}
                   onClick={() => handleDateClick(item)}
                   className={`${styles.date_btn}
-                              ${selectedDate.date === item.date &&
-                              selectedDate.month === item.month &&
-                              selectedDate.year === item.year
+                              ${selectedDate?.date === item.date &&
+                              selectedDate?.month === item.month &&
+                              selectedDate?.year === item.year
                                 ? styles.selected_btn
                                 : ""}
+                                ${!weekdays.includes(item.day) ? styles.bg_gray : ""}
                               `}
-                  disabled={!workingDays.includes(item.day)}
+                  disabled={!weekdays.includes(item.day)}
                 >
                   <p>{item.day.slice(0, 3)}</p>
                   <div className={styles.date}>

@@ -32,9 +32,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsAuthenticated(false);
         return;
       }
-
       const data = await response.json();
       setUser(data.user);
+      console.log("auth user",data)
       setIsAuthenticated(true);
     } catch (error) {
       setUser(null);

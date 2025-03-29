@@ -21,8 +21,6 @@ passport.use(
 
         if (checkUser.rows.length > 0) {
           user = checkUser.rows[0];
-          // User exists, return the user
-          // return done(null, checkUser.rows[0]);
         } else {
           // User does not exist, create a new user
           const newUser = await pool.query(

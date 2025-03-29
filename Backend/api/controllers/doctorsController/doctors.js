@@ -1,4 +1,5 @@
 
+const { parse } = require("dotenv");
 const pool = require("../../db/index.js")
 
 const filterDoctors = async (req, res) => {
@@ -26,7 +27,10 @@ const filterDoctors = async (req, res) => {
     }
     if (searchQuery) {
       queryParams.push(`%${searchQuery.toLowerCase()}%`);
-      query += ` AND (LOWER(name) LIKE $${queryParams.length} OR LOWER(speciality) LIKE $${queryParams.length})`;
+      query += ` AND (LOWER(name) LIKE $${queryParams.length} 
+      OR LOWER(speciality) LIKE $${queryParams.length}
+      OR LOWER(disease_name) LIKE $${queryParams.length})
+      `;
     }
 
     // Pagination logic
@@ -92,6 +96,49 @@ const doctorAvailability = async(req,res)=>
   }
 }
 
+const allSlots = async(req,res)=>
+{
+  try {
+    const result = await pool.query('SELECT slot_id ,slot_time FROM slots WHERE 1 = 1');
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
+const doctorSlots = async(req,res) =>
+{ const { doctor_id } = req.params
+  const { appointment_date }  = req.query
+  try {
+    const query1 = `
+      SELECT 
+        s.slot_id,
+        s.slot_time
+      FROM 
+        slots s
+      INNER JOIN 
+        doctor_availability da ON da.doctor_id = $1
+        AND s.slot_time >= da.slot_start
+        AND s.slot_time <= da.slot_end
+    `;
+    const slots = await pool.query(query1, [doctor_id]);
+    console.log("doctor slots ",slots.rows)
+    const query2 = `SELECT 
+        a.slot_id 
+        FROM appointments a
+        WHERE appointment_date = $1`
+    const unavailableslots = await pool.query(query2, [appointment_date]);
+    const unavailableIds = unavailableslots.rows.map(slot => slot.slot_id);
+    const availableSlots = slots.rows.filter(slot => !unavailableIds.includes(slot.slot_id));
+    console.log("unavailable slots",unavailableslots.rows)
+     res.status(200).json(availableSlots);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+  
+}
 const reviews =async(req,res)=>
 {
   try {
@@ -102,4 +149,6 @@ const reviews =async(req,res)=>
     res.status(500).send('Server Error');
   }
 }
-module.exports = { filterDoctors,reviews  ,doctorID  , availableSlots ,doctorAvailability}
+module.exports = { 
+  filterDoctors,reviews  ,doctorID  , 
+  availableSlots ,doctorAvailability ,allSlots,doctorSlots}

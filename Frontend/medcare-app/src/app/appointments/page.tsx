@@ -53,7 +53,12 @@ const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   };
 const handleSearch = (e : React.MouseEvent<HTMLButtonElement>)=> 
     {e.preventDefault();
-        setSearch(userinput)}
+        setFilters((initialFilter)=>( {
+            ...initialFilter,
+            rating:"all" ,
+        }))
+        setSearch(userinput)
+    }
     
 const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
     {   e.preventDefault()
@@ -109,7 +114,7 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
                   type="text" 
                   value={userinput} 
                   onChange={handleSearchChange} 
-                  placeholder="Search doctors"
+                  placeholder="Search doctors by disease, specialty and doctor name"
                   className={styles.search_input}
               />
           </div>

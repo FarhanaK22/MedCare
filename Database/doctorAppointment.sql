@@ -100,13 +100,18 @@ SELECT
     d.experience,
     d.gender,
     d.location,
-    COALESCE(ROUND(AVG(r.rating))::INT, 0) AS avgrating
+    COALESCE(ROUND(AVG(r.rating))::INT, 0) AS avgrating,
+	 COALESCE(STRING_AGG(DISTINCT dis.disease_name, ', '), 'N/A') AS disease_name
 FROM 
     doctors d
 LEFT JOIN 
     review r ON d.doctor_id = r.doctor_id
+LEFT JOIN 
+    diseases dis ON d.speciality = dis.speciality
 GROUP BY 
     d.doctor_id, d.name, d.speciality, d.degree, d.experience, d.gender, d.location;
+select * from view_doctor
+	
 select * from doctors
 
 CREATE TABLE slots (
@@ -188,9 +193,36 @@ VALUES
 
 INSERT INTO appointments (user_id, doctor_id, slot_id, booking_date, appointment_date, appointment_type, status)
 VALUES
-(1, 9, 10, NOW(), '2025-04-07', 'offline', 'declined'), -- Weekend for Doctor 9
-(1, 5, 5, NOW(), '2025-04-03', 'online', 'approved'), -- Weekday for Doctor 5
+(1, 9, 10, NOW(), '2025-03-29', 'offline', 'declined'), -- Weekend for Doctor 9
+(1, 5, 5, NOW(), '2025-03-30', 'online', 'approved'),  -- Weekday for Doctor 5
 -- User 2 appointments
-(2, 3, 3, NOW(), '2025-04-02', 'offline', 'pending'), -- Weekday for Doctor 3
-(2, 10, 11, NOW(), '2025-04-06', 'online', 'approved');
+(2, 3, 3, NOW(), '2025-03-31', 'offline', 'pending');  -- Weekday for Doc 3
+
+select *  from appointments
+
+CREATE TABLE diseases (
+    disease_id SERIAL PRIMARY KEY,
+    disease_name VARCHAR(100) NOT NULL,
+    symptoms TEXT NOT NULL,
+    speciality VARCHAR(50) NOT NULL
+);
+
+INSERT INTO diseases (disease_name, symptoms, speciality)
+VALUES
+('Lung Cancer', 'Persistent cough, chest pain, weight loss', 'Oncologist'),
+('Heart Attack', 'Chest pain, shortness of breath, fatigue', 'Cardiologist'),
+('Acne', 'Pimples, blackheads, skin inflammation', 'Dermatologist'),
+('Epilepsy', 'Seizures, confusion, loss of awareness', 'Neurologist'),
+('Asthma', 'Wheezing, coughing, shortness of breath', 'Pediatrician'),
+('Fracture', 'Pain, swelling, inability to move', 'Orthopedic'),
+('PCOS', 'Irregular periods, acne, weight gain', 'Gynecologist'),
+('Sinusitis', 'Headache, nasal congestion, facial pain', 'ENT Specialist'),
+('Depression', 'Persistent sadness, loss of interest, fatigue', 'Psychiatrist'),
+('Fever', 'High temperature, chills, sweating', 'General Physician'),
+('Diabetes', 'Frequent urination, excessive thirst, fatigue', 'Endocrinologist'),
+('Kidney Stones', 'Severe pain, blood in urine, nausea', 'Urologist'),
+('Tooth Decay', 'Toothache, sensitivity, cavities', 'Dentist');
+
+select * from slots
+
 

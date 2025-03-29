@@ -18,19 +18,15 @@ export default function GoogleCallback() {
                 if (!token) {
                     throw new Error("No token received");
                 }
-               
-                // Store the token in local storage or cookies
-                
+
                 document.cookie = `token=${token}; path=/; secure; samesite=strict`;
                 localStorage.setItem("token", token);
-                    
-                // Decode the token to get user data (optional)
                 const user = jwtDecode(token);
-                console.log(token) // Decode JWT payload safely
+                console.log(token) 
                 setUser(user);
                 setIsAuthenticated(true);
                     router.push("/");
-                
+                console.log("google user", user)
             } catch (error) {
                 console.error("Google callback error:", error);
                 router.push("/login");

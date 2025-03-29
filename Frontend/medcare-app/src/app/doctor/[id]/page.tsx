@@ -3,9 +3,9 @@ import React from "react";
 import { useState , useEffect } from "react";
 import styles from "../doctor.module.css"
 import Image from "next/image";
+import star from "../../../../public/images/Star.png"
 import pic  from "../../../../public/images/doctor.png"
 import { useRouter ,useParams } from "next/navigation";
-import axios from "axios";
 import { useAuth } from "../../context/context"
 
 interface Doctor{
@@ -94,11 +94,10 @@ export default function Doctor()
             await doctorDetail();
         }
       }
-
       getDoctor();
         }, [id]);
     
-    const handleBooking = () :void=> router.push(`/booking/${doctor?.id}`)
+    const handleBooking = () :void=> router.push(`/booking/${id}`)
     const handleReview = (e: React.MouseEvent<HTMLButtonElement>) => {setReview(!review)
         e.preventDefault()
      }
@@ -112,11 +111,14 @@ export default function Doctor()
                 <p>Degree : <span>{doctor?.degree}</span></p>
                 <p>Specialty : <span>{doctor?.speciality}</span></p>
                 <p>Experience : <span>{doctor?.experience} years</span></p>
-                <p>Ratings : <span>{doctor?.avgrating} / 5 </span></p>
+                <p>Ratings :
+                {Array.from({ length: Math.floor(doctor?.avgrating || 0) }).map((_, i) => (
+                  <Image key={`star-${i}`} src={star} alt="star" height={17.5} width={17.5} />
+                ))}</p>
                 <p>Gender : <span>{doctor?.gender}</span></p>
                 <p>Location : <span>{doctor?.location}</span></p>
                 <p>Availability : <span>{availability?.working_days}</span> </p>
-                <p>Timings : <span>{availability?.slot_start} - {availability?.slot_end}</span></p>
+                <p>Timings : <span>{availability?.slot_start.slice(0,5)} - {availability?.slot_end.slice(0,5)}</span></p>
             </div>
             <div className={styles.btns}>
                 <button className={styles.cardBtn}

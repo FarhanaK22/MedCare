@@ -11,10 +11,10 @@ import { useAuth } from "../context/context";
 export default function Header() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, checkAuth, setIsAuthenticated, setUser } = useAuth();
+  const { isAuthenticated, checkAuth, setIsAuthenticated, setUser ,user} = useAuth();
 
   useEffect(() => {
-    checkAuth(); // Recheck authentication state when the component mounts
+    checkAuth();
   }, []);
 
   const handleLogout = async () => {
@@ -29,7 +29,6 @@ export default function Header() {
         alert(errorData.message || "Logout failed. Please try again.");
         return;
       }
-
       setIsAuthenticated(false);
       setUser(null);
       localStorage.removeItem("token");
@@ -79,7 +78,7 @@ export default function Header() {
         </button>
         <div className={styles.btn_container}>
           {isAuthenticated ? (
-            <>
+            <><p style={{fontFamily:"cursive", color:"#1C4A2A"}}>{user?.name}</p>
               <button className={styles.logout_btn} onClick={handleLogout}>
                 Logout
               </button>

@@ -7,27 +7,6 @@ const passport_google = require("../../passport-google.js")
 const jwt = require("jsonwebtoken")
 router.post('/register',register)
 
-// router.post('/login', (req, res, next) => {
-//     passport_local.authenticate("local", (err, user, info) => {
-//       if (err) {
-//         console.error("Error during authentication:", err);
-//         return res.status(500).json({ message: "Internal server error" });
-//       }
-//       if (!user)  res.status(400).json({ message: info.message });
-  
-//       req.logIn(user, (err) => {
-//         if (err) {
-//           console.error("Error during login:", err);
-//           return res.status(500).json({ message: "Internal server error" });
-//         }
-//         return res.status(200).json({
-//           message: "Login successful",
-//           user: { id: user.user_id, email: user.email, username: user.username },
-//         });
-//       });
-//     })(req, res, next);
-//   });  
-
 router.post('/login', (req, res, next) => {
   passport_local.authenticate("local", (err, user, info) => {
       if (err) {
@@ -38,14 +17,13 @@ router.post('/login', (req, res, next) => {
           return res.status(400).json({ message: info.message });
       }
       res.cookie('token', user.token, {
-            httpOnly: true, // Prevent access from JavaScript
-            secure: false, // Set to true in production (requires HTTPS)
-            sameSite: 'Lax', // Adjust based on your frontend/backend setup
+            httpOnly: true,
+            secure: false, 
+            sameSite: 'Lax',
         });
-      // Return the JWT token and user details
       return res.status(200).json({
           message: "Login successful",
-          token: user.token, // JWT token generated in passport-local.js
+          token: user.token,
           user: { id: user.user_id, email: user.email, username: user.username },
       });
   })(req, res, next);
@@ -54,22 +32,6 @@ const passport = require("../../passport-local.js");
 router.post('/logout',logout)
 router.post('/addReview', passport.verifyToken, addReview);
 router.post('/bookSlot', passport.verifyToken, bookSlot);
-router.get('/me', (req, res) => {
-    res.json(req.user); 
-    const token = req.cookies?.token; // Extract token from cookies
-    if (!token) {
-        return res.status(403).json({ message: "No token found in cookies" });
-    }
-
-    jwt.verify(token, "secret", (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ message: "Invalid or expired token" });
-        }
-
-        res.status(200).json({ email: decoded.email, name: decoded.name });
-    });// Return user info from the token
-});
-
 
 router.get('/checktoken',(req, res) => {
     console.log("Cookies:", req.cookies);
@@ -97,8 +59,9 @@ router.get(
         failureRedirect: "http://localhost:3000/login",
     }),
     (req, res) => {
+        console.log("user in google")
         const token = jwt.sign(
-            { email: req.user.email, name: req.user.username }, // Payload
+            { id:user.id, email: req.user.email, name: req.user.username }, // Payload
             "secret", // Secret key from environment variable
             { expiresIn: "1h" } // Token expiration
           );
@@ -107,13 +70,5 @@ router.get(
         res.redirect(`http://localhost:3000/auth/google/callback?token=${token}`);
     }
 );
-// router.get('/me',(req,res)=>
-// {
-//     if(req.isAuthenticated())
-//     {
-//         res.json(req.user)
-//     }else{
-//         res.status(401).json({message : "not authenticated"})
-//     }
-// })
+
 module.exports = router

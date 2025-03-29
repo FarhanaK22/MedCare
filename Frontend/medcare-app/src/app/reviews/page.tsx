@@ -1,7 +1,8 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
+import star from "../../../public/images/Star.png"
+import Image from 'next/image';
 type Review = {
   rating_id: number;
   rating: number;
@@ -45,7 +46,7 @@ export default function Reviews() {
     justifyContent: 'center',
     alignItems:'center',}}>
       <h1 style={{textAlign:'center',color:'white'}}>🩺Doctor Reviews</h1>
-      {loading && <p>Loading reviews...</p>}
+      {loading && <p style={{color:"white"}}>Loading reviews...</p>}
       {error && <p>Error: {error}</p>}
       {!loading && !error && reviews.length === 0 && <p>No reviews available.</p>}
       {!loading && !error && reviews.length > 0 && (
@@ -66,7 +67,10 @@ export default function Reviews() {
               >
                 Doctor ID: {review.doctor_id}
               </h3>
-              <p>Rating: {review.rating} ⭐</p>
+              <p>Ratings :
+                {Array.from({ length: Math.floor(review.rating|| 0) }).map((_, i) => (
+                  <Image key={`star-${i}`} src={star} alt="star" height={17.5} width={17.5} />
+                ))}</p>
              </div>
               <p style={{color:'voilet',fontWeight:'500'}}>Comment: {review.comment || 'No comment provided.'}
                 <span style={{textAlign:'right', marginLeft:'20px'}}> | user-ID : {review.user_id}</span></p>

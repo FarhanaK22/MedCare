@@ -37,9 +37,9 @@ const Blog: React.FC = () => {
     style={{ display: 'flex', flexDirection: 'column' 
     , margin:'20px auto',
     justifyContent: 'center',
-    alignItems:'center',}}>
+    alignItems:'center', minHeight:"500px"}}>
       <h1 style={{textAlign:'center',color:'white'}}>🩺 Health Blogs</h1>
-      {loading && <p>Loading blogs...</p>}
+      {loading && <p style={{color:"white"}}>Loading blogs...</p>}
       {error && <p>{error}</p>}
       {!loading && !error && (
         <div>
