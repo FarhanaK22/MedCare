@@ -4,7 +4,6 @@ import React from "react";
 import {  faTruckMedical } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
 import styles from "./emergency.module.css"
-import { height } from "@fortawesome/free-solid-svg-icons/fa0";
 import {useRouter} from "next/navigation"
 
 export default function Emergency()

@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-
+const pool = require("../db/index.js")
 const {register ,addReview ,bookSlot,logout} = require ("../controllers/userController/user.js")
 const passport_local = require("../../passport-local.js")
 const passport_google = require("../../passport-google.js")
@@ -58,10 +58,13 @@ router.get(
     passport_google.authenticate("google", {
         failureRedirect: "http://localhost:3000/login",
     }),
-    (req, res) => {
+    async(req, res) => {
         console.log("user in google")
+        const data = await pool.query('SELECT user_id FROM users WHERE email = $1',[req.user.email])
+        console.log(data.rows[0]?.user_id)
+        const user_id =  data.rows[0]?.user_id
         const token = jwt.sign(
-            { id:user.id, email: req.user.email, name: req.user.username }, // Payload
+            { id:user_id, email: req.user.email, name: req.user.username }, // Payload
             "secret", // Secret key from environment variable
             { expiresIn: "1h" } // Token expiration
           );

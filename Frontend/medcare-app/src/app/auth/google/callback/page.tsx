@@ -18,7 +18,6 @@ export default function GoogleCallback() {
                 if (!token) {
                     throw new Error("No token received");
                 }
-
                 document.cookie = `token=${token}; path=/; secure; samesite=strict`;
                 localStorage.setItem("token", token);
                 const user = jwtDecode(token);

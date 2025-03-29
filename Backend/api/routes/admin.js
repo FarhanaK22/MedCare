@@ -9,10 +9,10 @@ const {bookings} = require("../controllers/adminController/admin.js")
 const {adminLogin} = require("../controllers/adminController/admin.js")
 
 router.post('/adminLogin',adminLogin)
-router.get('/all',doctorsData)
+router.get('/allDoctor',doctorsData)
 router.post('/addDoctor',addDoctor)
-router.patch('/updateDoctor',updateDoctor)
-router.delete('/deleteDoctor',deleteDoctor)
+router.patch('/updateDoctor/:id',updateDoctor)
+router.delete('/deleteDoctor/:id',deleteDoctor)
 
 router.get('/bookings',bookings)
 router.patch('/manageBooking',manageBooking)

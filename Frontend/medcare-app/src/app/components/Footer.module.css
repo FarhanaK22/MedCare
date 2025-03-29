@@ -5,10 +5,9 @@
     align-items: center;
     color: #8C8C8C;
     background-color: #FFFFFF;
-    height: 50px;
-    padding: 0 40px;
+    height:40px;
+    padding:30px 40px;
     border-top : 1px solid #DEDEDE;
-
 }
 .foot_icon{
     margin-left: 10px;

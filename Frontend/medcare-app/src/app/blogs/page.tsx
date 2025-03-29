@@ -37,8 +37,8 @@ const Blog: React.FC = () => {
     style={{ display: 'flex', flexDirection: 'column' 
     , margin:'20px auto',
     justifyContent: 'center',
-    alignItems:'center', minHeight:"500px"}}>
-      <h1 style={{textAlign:'center',color:'white'}}>🩺 Health Blogs</h1>
+    alignItems:'center',backgroundColor:"white",padding:"20px",color:"white"}}>
+      <h1 style={{textAlign:'center',color:'#1C4A2A'}}>🩺 Health Blogs</h1>
       {loading && <p style={{color:"white"}}>Loading blogs...</p>}
       {error && <p>{error}</p>}
       {!loading && !error && (
@@ -46,14 +46,14 @@ const Blog: React.FC = () => {
           {blogs.map((blog, index) => (
             <div key={index}
              style={{width:'90%',
-             backgroundColor:'white',
+             backgroundColor:'#1C4A2A',
              borderRadius:'10px', 
              border:'none',
               margin:'10px auto'
               ,padding:'10px', lineHeight:'2'}}>
-              <h3>{blog.title}</h3>
+              <h3 style={{color:"lightcyan"}}>{blog.title}</h3>
               <p>{blog.description || 'No description available.'}</p>
-              <a href={blog.url} target="_blank" rel="noopener noreferrer">
+              <a href={blog.url} target="_blank" rel="noopener noreferrer" style={{color:"lightblue"}}>
                 Read More
               </a>
             </div>

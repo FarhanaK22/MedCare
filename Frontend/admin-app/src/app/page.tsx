@@ -27,19 +27,20 @@ export default function Home() {
     e.preventDefault();
     setIsSubmitting(true); 
     try{
-      const url = "http://localhost:3001/admin/adminLogin";
-  
-    const response = await fetch(`${url}?apiKey=${adminPassword}`, {
-      method: "post",
+    // const response = await fetch(`${url}?apiKey=${adminPassword}`, {
+    //   method: "post",
+    const url = `http://localhost:3001/admin/adminLogin?apiKey=${adminPassword}`;
+    const response = await fetch(url, {
+      method: "POST",
     });
+
       if (response.ok) {
           setLoggedIn(true);
           setIsAdmin(true)
+          // console.log("response true")
           router.push("/dashboard");
         } 
-        alert("unauthorised")
     } catch (error) {
-      
       console.error("Error during login:", error);
     } finally {
       setIsSubmitting(false);

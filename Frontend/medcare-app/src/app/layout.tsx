@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const shouldHideFooter = ["/", "/login", "/register"].includes(pathname);
-  const isBookingRoute = pathname.startsWith("/booking/");
+  // const isBookingRoute = pathname.startsWith("/booking/");
   return (<AuthProvider>
     <html lang="en">
        <Head>
@@ -31,7 +31,7 @@ export default function RootLayout({
       
         <Header/>
         <main className="main">{children}</main>
-        {!shouldHideFooter && !isBookingRoute && <Footer />}
+        {!shouldHideFooter && <Footer />}
       </body>
     </html> </AuthProvider>
   );

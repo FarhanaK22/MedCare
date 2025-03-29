@@ -28,7 +28,7 @@ app.use(passport.initialize());
 // Enable CORS
 app.use(
     cors({
-      origin: "http://localhost:3000", // Specify the exact origin
+      origin: ["http://localhost:3000", "http://localhost:3002"], // Specify the exact origin
       methods: ["GET", "POST", "PUT", "DELETE"],
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true, // Important to allow credentials

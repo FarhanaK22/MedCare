@@ -44,8 +44,8 @@ export default function Reviews() {
     style={{ display: 'flex', flexDirection: 'column' 
     , margin:'20px auto',
     justifyContent: 'center',
-    alignItems:'center',}}>
-      <h1 style={{textAlign:'center',color:'white'}}>🩺Doctor Reviews</h1>
+    alignItems:'center',padding:"20px", color:"white"}}>
+      <h1 style={{textAlign:'center',color:'#1C4A2A'}}>🩺Doctor Reviews</h1>
       {loading && <p style={{color:"white"}}>Loading reviews...</p>}
       {error && <p>Error: {error}</p>}
       {!loading && !error && reviews.length === 0 && <p>No reviews available.</p>}
@@ -53,8 +53,8 @@ export default function Reviews() {
         <div>
           {reviews.map((review) => (
             <div key={review.rating_id}
-             style={{width:'90%',
-                         backgroundColor:'white',
+             style={{width:'90%',color:"white",
+                         backgroundColor:"#1C4A2A",
                          borderRadius:'10px', 
                          border:'none',
                           margin:'10px auto'
@@ -63,7 +63,7 @@ export default function Reviews() {
              }}>
              <h3
                 onClick={() => handleDoctorClick(review.doctor_id)}
-                style={{ cursor: 'pointer', textDecoration: 'none', color: 'blue' }}
+                style={{ cursor: 'pointer', textDecoration: 'none', color: 'white' }}
               >
                 Doctor ID: {review.doctor_id}
               </h3>
