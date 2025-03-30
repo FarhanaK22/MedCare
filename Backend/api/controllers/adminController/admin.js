@@ -163,7 +163,9 @@ const bookings = async(req,res)=>
 
 const sendMail = async(req,res)=>
 { 
- let {userid , type,status,date} = req.body
+ const {userid , type,status,date} = req.body
+//  userid= parseInt(userid)
+console.log("started")
 try{
   let message = ""
   if(status === "approved")
@@ -175,13 +177,7 @@ try{
   else{
       message =`Your Appointment is ${status} due to some reason. Please contact help : 911`
   }
-  const updateAppointment = await pool.query(
-    `UPDATE appointments
-SET status = $1
-WHERE user_id =$2`,[status,userid]
-  )
-  console.log(updateAppointment.rows[0])
-
+console.log("user id",typeof(userid))
   const getEmail = await pool.query(`
     SELECT email FROM
     users 
@@ -208,15 +204,24 @@ WHERE user_id =$2`,[status,userid]
       text : `${message}`,
       html: `<h1>${message}</h1>`
     }
+    console.log("sent email")
     const result = await transport.sendMail(mailOptions)
     sendMail().then(result=>console.log("email sent .....",result))
-.catch((err)=>console.log(err.message))
-console.log("Email sent successfully:", result);
+    .catch((err)=>console.log(err.message))
+    console.log("Email sent successfully:", result);
+    const updateAppointment = await pool.query(
+      `UPDATE appointments
+    SET status = $1
+    WHERE user_id =$2`,[status,userid]
+    )
+    // console.log(updateAppointment.rows[0])
+    console.log("updated appointments")
 res.status(200).json({ message: "Email sent successfully", result });
 } catch (err) {
 console.error("Error occurred:", err.message);
 res.status(500).json({ error: "Failed to send email" });
 }
+
 }
 
 

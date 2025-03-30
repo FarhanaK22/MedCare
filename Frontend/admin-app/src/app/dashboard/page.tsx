@@ -30,7 +30,7 @@ export default function Dashboard ()
     const [isMounted, setIsMounted] = useState(false);
     const {isAdmin, setIsAdmin} = useAdminContext()
     const [doctor_id,setID] = useState<string>("")
-    const [userid, setUserId] = useState<any>()
+    const [userid, setUserId] = useState<number>()
     const [type,setType] =useState<string>("")
     const [action,setAction] = useState<string>("")
     const [date,setDate] = useState<string>("")
@@ -164,23 +164,20 @@ export default function Dashboard ()
         console.error("Error in addDoctor:", error);
       }
    }
-    useEffect (
-        ()=>
-        {
-            const getAppointments = async()=>
-            {
-               const response = await fetch("http://localhost:3001/admin/bookings")
-               const data = await response.json()
-               console.log(data)
-                setAppointments(data)      
-                setIsLoading(false);      
-            } 
-            getAppointments();
-        },[]
-    )
+   
+   const getAppointments = async()=>
+    {
+       const response = await fetch("http://localhost:3001/admin/bookings")
+       const data = await response.json()
+       console.log(data)
+        setAppointments(data)      
+        setIsLoading(false);      
+    } 
  const confirmAppointment =async ()=>
-      {
+      { await getAppointments()
+        console.log(typeof(userid))
         try {
+          console.log("userid type",userid)
           const response = await fetch(`http://localhost:3001/admin/sendMail?admin=${isAdmin}`, {
             method: "POST",
             headers: {
@@ -195,15 +192,16 @@ export default function Dashboard ()
               }
             ),
           });
+          console.log("Trying to perform action")
           if (!response.ok) {
-            alert("Error updating appointments");
+            console.log("Error updating appointments");
             return;
           }
           const data = await response.json();
-          alert("Appointments updated");
+          console.log("Appointments updated");
          
         } catch (error) {
-         alert("Error in performing action:" +error);
+         console.log("Error in performing action:" +error);
         }
       }
 
@@ -215,6 +213,9 @@ export default function Dashboard ()
             <p  onClick={()=>setIsAdmin(false)} style={{color:"red",cursor:'pointer'}}>Logout</p>
             <div className="appointments">
             <p>Manage Appointment Booking requests</p>
+            <button type="submit" onClick={(e:React.MouseEvent<HTMLButtonElement>)=> {e.preventDefault()
+                          getAppointments()
+                        }}>Show Appointments</button>
             <table className="appointments-table">
             <thead>
                 <tr>
