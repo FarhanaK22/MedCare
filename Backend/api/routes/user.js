@@ -5,6 +5,8 @@ const {register ,addReview ,bookSlot,logout} = require ("../controllers/userCont
 const passport_local = require("../../passport-local.js")
 const passport_google = require("../../passport-google.js")
 const jwt = require("jsonwebtoken")
+const passport = require("../../passport-local.js");
+
 router.post('/register',register)
 
 router.post('/login', (req, res, next) => {
@@ -28,10 +30,9 @@ router.post('/login', (req, res, next) => {
       });
   })(req, res, next);
 });
-const passport = require("../../passport-local.js");
 router.post('/logout',logout)
-router.post('/addReview', passport.verifyToken, addReview);
-router.post('/bookSlot', passport.verifyToken, bookSlot);
+router.post('/addReview/:id', passport.verifyToken, addReview);
+router.post('/bookSlot/:id', passport.verifyToken, bookSlot);
 
 router.get('/checktoken',(req, res) => {
     console.log("Cookies:", req.cookies);

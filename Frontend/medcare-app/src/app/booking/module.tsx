@@ -18,7 +18,7 @@ const generateDateObject = (offset: number = 0): DateObject => {
     year: date.getFullYear(),
   };
 };
-const generateWeekdates = (weekOffset = 0) => {
+const generateWeekdates = (weekOffset = 0) :DateObject[] => {
     const datesArray: DateObject[] = [];
     for (let i = 0; i < 7; i++) {
       const dayOffset = weekOffset + i;

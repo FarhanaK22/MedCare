@@ -141,4 +141,11 @@ const manageBooking = async(req,res)=>
     
 }
 
-module.exports = {adminLogin, doctorsData ,addDoctor ,updateDoctor, deleteDoctor,manageBooking,bookings }
+const sendMail = async(req,res)=>
+{ res.send("I am sending mail")
+
+}
+
+module.exports = {adminLogin, doctorsData ,sendMail,
+  addDoctor ,updateDoctor, 
+  deleteDoctor,manageBooking,bookings }

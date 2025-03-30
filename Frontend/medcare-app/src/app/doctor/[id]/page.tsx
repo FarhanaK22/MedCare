@@ -7,6 +7,7 @@ import star from "../../../../public/images/Star.png"
 import pic  from "../../../../public/images/doctor.png"
 import { useRouter ,useParams } from "next/navigation";
 import { useAuth } from "../../context/context"
+import axios from "axios";
 
 interface Doctor{
     id: number,
@@ -32,24 +33,38 @@ export default function Doctor()
     const [isMounted,setIsMounted] = useState<boolean>(false)
     const [doctor, setDoctorDetail ] = useState<Doctor>()
     const [review, setReview] = useState<boolean>(false)
+    const [comment, setComment] = useState<string>("")
+    const [rating, setRating]= useState<string>("")
     const [availability ,setDoctorAvailability]= useState<Availability>()
+    const {user} =useAuth()
 
+    useEffect(() => {
+      if (!isAuthenticated) {
+        return router.push("/login"); // Redirect to login page
+      }
+      console.log("user at doctor",user)
+      setIsMounted(true)
+    }, [isAuthenticated, router,params,user]);
+    useEffect(() => {
+    async function getDoctor() {
+      if (id && isAuthenticated) {
+          await doctorAvailability();
+          await doctorDetail();
+      }
+    }
+    getDoctor();
+      }, [id]);
         const url = "http://localhost:3001/doctors/detail";
         const doctorDetail = async () => {
-            try {
-              const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+            try {  const token = localStorage.getItem("token"); 
               const response = await fetch(`${url}/${id}`, {
                 method: "GET",
                 credentials: "include",
                 headers: {
-                  "Authorization": `Bearer ${token}`, // Add the token to the Authorization header
-                },
-              });
+                  "Authorization": `Bearer ${token}`,
+                }, });
 
-              if (!response.ok) {
-                throw new Error("Failed to fetch doctor details");
-              }
-
+              if (!response.ok) throw new Error("Failed to fetch doctor details");
               const data = await response.json();
               console.log("Doctors fetched:", data);
               setDoctorDetail(data);
@@ -60,19 +75,15 @@ export default function Doctor()
         const url2= "http://localhost:3001/doctors/doctorAvailability"
         const doctorAvailability = async () => {
             try {
-              const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+              const token = localStorage.getItem("token"); 
               const response = await fetch(`${url2}/${id}`, {
                 method: "GET",
                 credentials: "include",
                 headers: {
-                  "Authorization": `Bearer ${token}`, // Add the token to the Authorization header
-                },
-              });
+                  "Authorization": `Bearer ${token}`, 
+                },});
 
-              if (!response.ok) {
-                throw new Error("Failed to fetch doctor availability");
-              }
-
+              if (!response.ok)  throw new Error("Failed to fetch doctor availability");
               const data = await response.json();
               console.log("Doctors availability:", data);
               setDoctorAvailability(data);
@@ -81,22 +92,51 @@ export default function Doctor()
               console.error("Error fetching doctor availability:", err);
             }
           };
-          useEffect(() => {
-            if (!isAuthenticated) {
-              return router.push("/login"); // Redirect to login page
+
+          const submitReview = async (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+           const userrating = parseInt(rating);
+            if (isNaN(userrating) || userrating > 5 || userrating < 1) {
+              alert("Rating must be between 1 and 5.");
+              return;
             }
-            setIsMounted(true)
-          }, [isAuthenticated, router,params]);
-    useEffect(() => {
-      async function getDoctor() {
-        if (id && isAuthenticated) {
-            await doctorAvailability();
-            await doctorDetail();
-        }
-      }
-      getDoctor();
-        }, [id]);
-    
+            const url = `http://localhost:3001/user/addReview/${id}`;
+            const token = localStorage.getItem("token");
+            const body = {
+              userid: user.id,
+              comment: comment,
+              rating: userrating,
+            };    
+            try {
+              console.log("Sending submit request...");
+              const response = await fetch(url, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                  Authorization: `Bearer ${token}`, // Include token
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body), });
+              console.log("Response received:", response);
+              if (response.status === 200) {
+                const data = await response.json();
+                console.log("Response data:", data);
+                alert("Review submitted successfully!");
+                setRating("");
+                setComment("");
+              } else if (response.status === 401) {
+                alert("User has no appointment with the doctor.");
+              }else {
+                alert(`Unexpected error: ${response.status}`);
+              }
+            } catch (error) {
+              console.error("Error submitting review:", error);
+              alert("Error submitting review. Please try again later.");
+            }
+          };
+    const handleRating =(e:React.ChangeEvent<HTMLInputElement>)=> setRating(e.target.value)
+    const handleComment=(e:React.ChangeEvent<HTMLTextAreaElement>)=>setComment(e.target.value)
+
     const handleBooking = () :void=> router.push(`/booking/${id}`)
     const handleReview = (e: React.MouseEvent<HTMLButtonElement>) => {setReview(!review)
         e.preventDefault()
@@ -131,11 +171,19 @@ export default function Doctor()
             </div>
             {
                 review ? <div className={styles.review}>
-                            <form action="/review">
-                                <input type="text" name="doctor-id" value={doctor?.id} disabled placeholder="Doctor Id added by default" />
-                                <p>Give your doctor rating : 
-                                    <input type="text" placeholder="Enter number between 1 - 5 " />
-                                </p>
+                            <form onSubmit={submitReview}>
+                                <p>Give your doctor review </p>
+                                <input type="text"
+                                    name="rating"
+                                    value={rating}
+                                    onChange={handleRating}
+                                     placeholder="Enter number between 1 - 5 " 
+                                     required/>
+                                    <textarea name="comment" 
+                                    value={comment}
+                                    onChange={handleComment}
+                                    placeholder="Add Comment"
+                                    cols={30} rows={4}/>
                                 <div className={styles.btns}>
                                     <button onClick={handleReview} 
                                     className={styles.reviewBtn} 

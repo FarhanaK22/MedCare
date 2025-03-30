@@ -9,6 +9,11 @@ import morning from "../../../../public/images/sun.png";
 import afternoon from "../../../../public/images/sunset.png";
 import {DateObject, SlotType , generateDateObject,convertDatetoString,generateWeekdates}  from "../module"
 import { useRouter ,useParams } from "next/navigation";
+interface Availability {
+  working_days: string,
+  slot_start: string,
+  slot_end: string,
+}
 
 export default function Slot() {
   const [isMounted, setIsMounted] = useState(false);
@@ -24,6 +29,7 @@ export default function Slot() {
   const [selectedTime, setSlotTime] = useState<string>("");
   const [morningSlots, setMorningSlots] = useState<string[]>([]);
   const [eveningSlots, setEveningSlots] = useState<string[]>([]);
+  const [availability ,setDoctorAvailability]= useState<Availability>()
   const { isAuthenticated, checkAuth ,user} = useAuth();
   const weekdays : string[]= ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
   const weekends : string[]=["Saturday", "Sunday"]
@@ -42,6 +48,7 @@ export default function Slot() {
       if(isAuthenticated) {
         setIsMounted(true);
       }}
+      setSelectedDate(generateDateObject())
 authorise();
   }, []);
   
@@ -68,7 +75,7 @@ authorise();
        } catch (error) {
          console.error('Error fetching slots:', error);
        }}
- 
+   
    const getDocSlots = async () =>
    { try {
      const token = localStorage.getItem("token");
@@ -94,9 +101,31 @@ authorise();
    } catch (error) {
      console.error('Error fetching slots:', error);
    }}
+   const url2= "http://localhost:3001/doctors/doctorAvailability"
+        const doctorAvailability = async () => {
+            try {
+              const token = localStorage.getItem("token"); 
+              const response = await fetch(`${url2}/${id}`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                  "Authorization": `Bearer ${token}`, 
+                },});
+
+              if (!response.ok)  throw new Error("Failed to fetch doctor availability");
+              const data = await response.json();
+              console.log("Doctors availability:", data);
+              setDoctorAvailability(data);
+              console.log(availability);
+            } catch (err) {
+              console.error("Error fetching doctor availability:", err);
+            }
+          };
+   doctorAvailability()
    getSlots()
    getDocSlots()
  }, []);
+        
   const handlePrevMonth = () => setOffset((prev) => prev - 30);
   const handleNextMonth = () => setOffset((prev) => prev + 30);
   const handleNext6Days = () => setOffset((prev) => prev + 7);
@@ -107,9 +136,47 @@ authorise();
   };
   const handleSlotClick = (time: string) => {
     setSlotTime(time);
-    console.log("Selected Date:",time ,{bookingType});
+    console.log("Selected Time:",time ,{bookingType});
   };
-
+  const bookAppointment= async(e:React.MouseEvent<HTMLButtonElement>)=>
+      { e.preventDefault();
+        if(!selectedDate || !selectedTime)
+          alert ("select date and time")
+        try {
+          const url = `http://localhost:3001/user/bookSlot/${id}`
+            const token = localStorage.getItem("token");
+            const body = {
+              userid : user.id
+              , slot_time : selectedTime
+              , slot_date :selectedDate
+              , type : bookingType
+            };  
+              console.log("Sending submit request...");
+              const response = await fetch(url, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                  Authorization: `Bearer ${token}`, 
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body), });
+              console.log("Response received:", response);
+              if (response.status === 201) {
+                const data = await response.json();
+                console.log("Response data:", data);
+                alert("Appointment request submitted successfully!");
+                alert("We will send confirmation through email.")
+                router.push('/')
+              } else if (response.status === 401) {
+                alert("User has no appointment with the doctor.");
+              }else {
+                alert(`Unexpected error: ${response.status}`);
+              }
+            } catch (error) {
+              console.error("Error submitting review:", error);
+              alert("Error submitting review. Please try again later.");
+            }
+          };
   if (!isMounted) return <div>Loading...</div>;
 
   return (
@@ -123,21 +190,19 @@ authorise();
         <div className={styles.booking}>
           <div className={styles.booking_head}>
             <p className={styles.booking_head_p}>Schedule Appointment</p>
-            <button className={styles.appointment_btn}>Book Appointment</button>
+            <button onClick={bookAppointment}
+            className={styles.appointment_btn}>Book Appointment</button>
           </div>
           <div className={styles.booking_type}>
             <button
               onClick={() => setBookingType("online")}
               className={`${styles.bookingtype_online} ${bookingType === "online" ? styles.bg_green : ""}`}
-            >
-              Book Video Consult
+            >Book Video Consult
             </button>
-
             <button
               onClick={() => setBookingType("offline")}
               className={`${styles.bookingtype_offline} ${bookingType === "offline" ? styles.bg_green : ""}`}
-            >
-              Book Hospital Visit
+            > Book Hospital Visit
             </button>
           </div>
           <select name="location" id="location" className={styles.location}>
@@ -148,14 +213,15 @@ authorise();
           <div className={styles.dates_container}>
             <div className={styles.month}>
               <Image
-                onClick={generateDateObject().month !== selectedDate?.month || offset ? handlePrevMonth : undefined}
+                onClick={generateDateObject().month !== selectedDate?.month || offset ? 
+                  handlePrevMonth : undefined}
                 src={left}
                 alt="left-arrow"
                 width={25}
                 height={23}
               />
               <div className={styles.date}>
-                <p>{selectedDate?.month}</p>
+                <p>{selectedDate?.month }</p>
                 <p>{selectedDate?.year}</p>
               </div>
               <Image onClick={handleNextMonth} src={right} alt="right-arrow" width={25} height={23} />
@@ -171,10 +237,20 @@ authorise();
                               selectedDate?.year === item.year
                                 ? styles.selected_btn
                                 : ""}
-                                ${!weekdays.includes(item.day) ? styles.bg_gray : ""}
-                              `}
-                  disabled={!weekdays.includes(item.day)}
-                >
+                                ${availability?.working_days == "weekdays"?
+                                  !weekdays.includes(item.day) ? styles.bg_gray : "" :
+                                  !weekends.includes(item.day) ? styles.bg_gray : "" 
+                                } } `}
+                              disabled={
+                                new Date(
+                                  item.year,
+                                  parseInt(item.month, 10) - 1, 
+                                  item.date
+                                ) < new Date() ||
+                                (availability?.working_days === "weekdays"
+                                  ? !weekdays.includes(item.day)
+                                  : !weekends.includes(item.day))
+                              }>
                   <p>{item.day.slice(0, 3)}</p>
                   <div className={styles.date}>
                     <p>{item.date}</p>
@@ -210,13 +286,11 @@ authorise();
                       key={index}
                       onClick={() => handleSlotClick(item)}
                       className={`${styles.slot_btn}
-                                ${selectedTime === item ? styles.bg_green : ""} ${
+                        ${selectedTime === item ? styles.bg_green : ""} ${
                         !morningAvailableSlot.includes(item) ? styles.bg_gray : ""
-                      }
-                                `}
+                      } `}
                       disabled={!morningAvailableSlot.includes(item)}
-                    >
-                      {item}
+                    > {item}
                     </button>
                   ))}
                 </div>
@@ -235,20 +309,18 @@ authorise();
                       key={index}
                       onClick={() => handleSlotClick(item)}
                       className={`${styles.slot_btn}
-                                            ${selectedTime === item ? styles.bg_green : ""} ${
+                          ${selectedTime === item ? styles.bg_green : ""} ${
                         !eveningAvailableSlot.includes(item) ? styles.bg_gray : ""
-                      }
-                                            `}
+                      } `}
                       disabled={!eveningAvailableSlot.includes(item)}
-                    >
-                      {item}
+                    > {item}
                     </button>
                   ))}
                 </div>
               </div>
             </div>
           </div>
-          <button className={styles.next_btn}>Next</button>
+          <button onClick={()=>alert("Click Book Appoinment")} className={styles.next_btn}>Next</button>
         </div>
       </div>
     </div>

@@ -201,7 +201,7 @@ position: static;}
     color:white;
     border-radius: 10px;
     border:none;
-    padding: 8px 16px;
+    padding: 10px 20px;
     background-color: var(--green-primary);
 }
 .booking_head,.booking_type ,.slot_session{

@@ -137,6 +137,7 @@
     color:#0E2515;
 }
 .card{
+    cursor: pointer;
     color: #8C8C8C;
     text-align: center;
     width: 30%;

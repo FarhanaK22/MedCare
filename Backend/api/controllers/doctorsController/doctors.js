@@ -142,7 +142,9 @@ const doctorSlots = async(req,res) =>
 const reviews =async(req,res)=>
 {
   try {
-    const result = await pool.query('SELECT * FROM review ORDER BY rating DESC');
+    const result = await pool.query(
+      `SELECT * FROM review ORDER BY rating_id DESC`
+       );
     res.json(result.rows);
   } catch (err) {
     console.error(err.message);

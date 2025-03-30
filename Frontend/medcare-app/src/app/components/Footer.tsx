@@ -9,7 +9,7 @@ export default function Footer()
 {
     return (
         <div className={styles.footer}>
-            <p>© EmScripts 2025. All Right Reserved.</p>
+            <p>© FarhanaScripts 2025. All Right Reserved.</p>
             <div>
                 <Image src={phone} alt ="phone" width={15} height={15} id="phone"  className={styles.foot_icon}/>
                 <Image src={whatsapp} alt ="whatsapp" width={15} height={15} id="whatsapp"  className={styles.foot_icon}/>

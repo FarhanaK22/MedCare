@@ -66,6 +66,8 @@
     border-radius: 5px;
 }
 .review input{
-    border: none;
+    display: block;
     padding: 10px;
+    margin: 0 auto;
+    margin-bottom: 10px;
 }
