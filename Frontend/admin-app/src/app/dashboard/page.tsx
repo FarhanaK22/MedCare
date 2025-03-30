@@ -30,6 +30,11 @@ export default function Dashboard ()
     const [isMounted, setIsMounted] = useState(false);
     const {isAdmin, setIsAdmin} = useAdminContext()
     const [doctor_id,setID] = useState<string>("")
+    const [userid, setUserId] = useState<any>()
+    const [type,setType] =useState<string>("")
+    const [action,setAction] = useState<string>("")
+    const [date,setDate] = useState<string>("")
+
     const [doctor,setDoctor] = useState<doctorType>({
       name: "",
       speciality: "",
@@ -79,36 +84,28 @@ export default function Dashboard ()
   
     try {
       const response = await fetch(`http://localhost:3001/admin/updateDoctor/${doctor_id}`, {
-        method: "PATCH",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(doctor),
       });
   
-      // Handle case when doctor is not found
       if (response.status === 404) {
         alert("Doctor does not exist");
         return;
       }
-  
-      // Handle any other non-successful responses
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Error updating doctor:", errorText);
         alert("Error updating doctor: " + errorText);
         return;
       }
-  
-      // Parse the response and update state
       const data = await response.json();
       alert("Doctor details updated");
-  
       setDoctors((prev) =>
         prev.map((doc) => (doc.doctor_id === data.doctor.doctor_id ? data.doctor : doc))
       );
-  
-      // Reset the form fields
       setDoctor({
         name: "",
         speciality: "",
@@ -122,41 +119,6 @@ export default function Dashboard ()
       alert("Error updating doctor: " + error);
     }
   };
-  // const handleUpdateDoctor =async(e: React.FormEvent<HTMLFormElement>)=>
-  // {e.preventDefault();
-  //   try {
-  //     console.log(doctor_id)
-  //     const response = await fetch(`http://localhost:3001/admin/updateDoctor/${doctor_id}`, {
-  //       method: "PATCH",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(doctor),
-  //     });  
-  //     if(response.status == 404)
-  //       {alert("Doctor doesnot exist")
-  //     return}
-  //     if (!response.ok) {
-  //       console.error("Error Updating doctor");
-  //       return;
-  //     }
-  //     const data = await response.json();
-  //     alert("Doctor Detail Updated");
-  //     setDoctors((prev) =>
-  //       prev.map((doc) => (doc.doctor_id === data.doctor.doctor_id ? data.doctor : doc))
-  //     );
-  //     setDoctor({
-  //       name: "",
-  //       speciality: "",
-  //       degree: "",
-  //       experience: "",
-  //       email: "",
-  //       gender: "",
-  //     });
-  //   } catch (error) {
-  //     alert("Error in addDoctor:"+ error);
-  //   }
-  // }
   const handleDeleteDoctor = async (e: React.FormEvent<HTMLFormElement>)=>
     { e.preventDefault();
       try {
@@ -176,7 +138,7 @@ export default function Dashboard ()
    const addDoctor = async(e: React.FormEvent<HTMLFormElement>)=>
     { e.preventDefault();
       try {
-        const response = await fetch("http://localhost:3001/admin/addDoctor?admin=${isAdmin}", {
+        const response = await fetch(`http://localhost:3001/admin/addDoctor?admin=${isAdmin}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -216,6 +178,34 @@ export default function Dashboard ()
             getAppointments();
         },[]
     )
+ const confirmAppointment =async ()=>
+      {
+        try {
+          const response = await fetch(`http://localhost:3001/admin/sendMail?admin=${isAdmin}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+              {
+              userid : userid,
+              type : type,
+              status : action,
+              date : date
+              }
+            ),
+          });
+          if (!response.ok) {
+            alert("Error updating appointments");
+            return;
+          }
+          const data = await response.json();
+          alert("Appointments updated");
+         
+        } catch (error) {
+         alert("Error in performing action:" +error);
+        }
+      }
 
     if(!isMounted)  return (<div className="loading">Loading.....</div>)
       if(!isAdmin) return null
@@ -256,8 +246,25 @@ export default function Dashboard ()
                   <td>{item.appointment_date}</td>
                   <td>{item.appointment_type}</td>
                   <td>
-                    <button className="approve-btn">Approve</button>
-                    <button className="reject-btn">Decline</button>
+                    <button onClick={(e:React.MouseEvent<HTMLButtonElement>)=>
+                      { e.preventDefault()
+                        setType(item.appointment_type)
+                        setDate(item.appointment_date)
+                        setUserId(item.user_id)
+                        setAction("approved")
+                        confirmAppointment();
+                      }
+                    } 
+                      className="approve-btn">Approve</button>
+                    <button  onClick={(e:React.MouseEvent<HTMLButtonElement>)=>
+                      { e.preventDefault()
+                        setType(item.appointment_type)
+                        setDate(item.appointment_date)
+                        setUserId(item.user_id)
+                        setAction("declined")
+                        confirmAppointment();
+                      }}
+                    className="reject-btn">Decline</button>
                   </td>
                 </tr>
               ))

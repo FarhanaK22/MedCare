@@ -6,7 +6,6 @@ const filterDoctors = async (req, res) => {
   const { rating, experience, gender , searchQuery = "", page = 1} = req.query;
 
   try {
-    // Base query
     let query = "SELECT * FROM view_doctor WHERE 1=1";
     const queryParams = [];
 

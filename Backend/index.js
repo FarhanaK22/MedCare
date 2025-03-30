@@ -1,5 +1,9 @@
 const express = require("express");
 const app = express();
+app.use(express.json()); // For parsing application/json
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.json());
+const cookieParser = require("cookie-parser"); 
 require('events').EventEmitter.defaultMaxListeners = 20;
 const config = require("./config.js");
 const port = config.port;
@@ -7,6 +11,7 @@ const doctorRoutes = require("./api/routes/doctors.js");
 const userRoutes = require("./api/routes/user.js");
 const admin = require("./api/routes/admin.js");
 const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: true }));
 const cors = require("cors");
 const passport = require("passport");
 const passport_local = require("./passport-local.js");
@@ -35,9 +40,6 @@ app.use(
     })
 );
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
-const cookieParser = require("cookie-parser"); // Import cookie-parser
 
 app.use(cookieParser());
 // Define routes

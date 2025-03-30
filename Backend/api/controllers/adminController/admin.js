@@ -1,4 +1,19 @@
 const pool = require("../../db/index.js")
+const nodemailer = require("nodemailer");
+const {google} =require ("googleapis")
+
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const oAuth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_ADMIN_ID,
+  process.env.GOOGLE_ADMIN_SECRET,
+  process.env.GOOGLE_REDIRECT_URL
+)
+
+oAuth2Client.setCredentials({refresh_token : process.env.GOOGLE_REFRESH_TOKEN})
+
 
 const validAdminPassword = "admin"
 const adminLogin = async(req,res,next)=>
@@ -42,7 +57,8 @@ const doctorsData = async(req,res) =>
 }
 
 const addDoctor = async(req,res)=>
-{const {name, speciality, degree, experience, email, gender} = req.body
+{
+  const {name, speciality, degree, experience, email, gender} = req.body
  try{
   const result = await pool.query(
     `INSERT INTO doctors (name, speciality, degree, experience, email, gender)
@@ -63,7 +79,14 @@ const addDoctor = async(req,res)=>
  }
 }
 const updateDoctor = async(req,res)=>
-{ const id = parseInt(req.params.id, 10)
+{ 
+    const id = parseInt(req.params.id, 10)
+  if (isNaN(id)) {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid doctor ID",
+    });
+  }
   const {name, speciality, degree, experience, email, gender} = req.body
   try{
   const result = await pool.query(
@@ -89,6 +112,7 @@ const updateDoctor = async(req,res)=>
       });
     }
 
+    console.log("Doctor updated successfully");
   }catch(err)
   { console.error("error", err);
    res.status(500).json({
@@ -136,16 +160,66 @@ const bookings = async(req,res)=>
   {
     console.log("error at server",err)
   }}
-const manageBooking = async(req,res)=>
-{
-    
-}
 
 const sendMail = async(req,res)=>
-{ res.send("I am sending mail")
+{ 
+ let {userid , type,status,date} = req.body
+try{
+  let message = ""
+  if(status === "approved")
+  {
+      message = `your ${type} appointment is ${status} for date : ${date}.`
+      if(type === "online")
+        message = message + `This is Dummylink to video consultation`
+  }
+  else{
+      message =`Your Appointment is ${status} due to some reason. Please contact help : 911`
+  }
+  const updateAppointment = await pool.query(
+    `UPDATE appointments
+SET status = $1
+WHERE user_id =$2`,[status,userid]
+  )
+  console.log(updateAppointment.rows[0])
 
+  const getEmail = await pool.query(`
+    SELECT email FROM
+    users 
+    WHERE user_id = $1`,[userid])
+
+  const useremail = getEmail.rows[0].user_id || "farhana30092k1@gmail.com"
+  const accessToken = await oAuth2Client.getAccessToken()
+  const transport = nodemailer.createTransport(
+    {
+      service : 'gmail',
+      auth:{
+        type: 'OAuth2',
+        user:'farhana.khatoon@tothenew.com',
+        clientId : process.env.GOOGLE_ADMIN_ID,
+        clientSecret : process.env.GOOGLE_ADMIN_SECRET,
+        refreshToken :process.env.GOOGLE_REFRESH_TOKEN,
+        accessToken : accessToken,
+      }
+    } )
+    const mailOptions = {
+      from : "AdminMEDCARE<farhana.khatoon@tothenew.com>",
+      to : useremail,
+      subject : "Your MEDCARE :Appoinment confirmation  ",
+      text : `${message}`,
+      html: `<h1>${message}</h1>`
+    }
+    const result = await transport.sendMail(mailOptions)
+    sendMail().then(result=>console.log("email sent .....",result))
+.catch((err)=>console.log(err.message))
+console.log("Email sent successfully:", result);
+res.status(200).json({ message: "Email sent successfully", result });
+} catch (err) {
+console.error("Error occurred:", err.message);
+res.status(500).json({ error: "Failed to send email" });
 }
+}
+
 
 module.exports = {adminLogin, doctorsData ,sendMail,
   addDoctor ,updateDoctor, 
-  deleteDoctor,manageBooking,bookings }
+  deleteDoctor,bookings }
