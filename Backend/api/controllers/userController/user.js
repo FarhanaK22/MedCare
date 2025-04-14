@@ -20,7 +20,7 @@ const register = async(req,res)=>
           message: "User registered successfully",
           user: result.rows[0],
         });
-      }    catch (err) {
+      }catch (err) {
         console.error("Error registering user:", err);
         res.status(500).json({ error: "Internal Server Error" });
     }

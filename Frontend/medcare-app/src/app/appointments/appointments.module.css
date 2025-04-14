@@ -78,10 +78,16 @@
     gap:1rem;
     padding: 10px;
 }
-.pagination button{
+.pagination_btn{
     color: #1C4A2A;
     border: none;
     background-color: transparent;
+    cursor: pointer;
+}
+.pagination_btn:disabled{
+    color: #8C8C8C;
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 /* 
 --------------- Filter Styles ---------------- */

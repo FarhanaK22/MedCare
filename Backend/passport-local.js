@@ -16,6 +16,10 @@ passport.use(new Strategy({ usernameField: "email" }, async function verify(emai
             return cb(null, false, { message: "User does not exist" });
         }
         const user = checkemail.rows[0];
+        if (!user.password) {
+            return cb(null, false, { message: "This account was created using Google sign-in. Please use Google to log in." });
+        }
+
         const hashedpassword = user.password;
         console.log("Hashed Password:", hashedpassword); // Debugging
 

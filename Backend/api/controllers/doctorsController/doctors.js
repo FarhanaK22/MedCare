@@ -31,7 +31,7 @@ const filterDoctors = async (req, res) => {
       OR LOWER(disease_name) LIKE $${queryParams.length})
       `;
     }
-
+    query += ` ORDER BY avgrating DESC`;
     // Pagination logic
     const limit = 6;
     const offset = (page - 1) * limit;
@@ -126,7 +126,7 @@ const doctorSlots = async(req,res) =>
     const query2 = `SELECT 
         a.slot_id 
         FROM appointments a
-        WHERE appointment_date = $1`
+        WHERE appointment_date = $1 AND status = 'approved'`
     const unavailableslots = await pool.query(query2, [appointment_date]);
     const unavailableIds = unavailableslots.rows.map(slot => slot.slot_id);
     const availableSlots = slots.rows.filter(slot => !unavailableIds.includes(slot.slot_id));

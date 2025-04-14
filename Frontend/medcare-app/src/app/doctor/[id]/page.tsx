@@ -39,112 +39,111 @@ export default function Doctor()
     const {user} =useAuth()
 
     useEffect(() => {
-      if (!isAuthenticated) {
-        return router.push("/login"); // Redirect to login page
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/login");
+        return;
       }
-      console.log("user at doctor",user)
-      setIsMounted(true)
-    }, [isAuthenticated, router,params,user]);
-    useEffect(() => {
-    async function getDoctor() {
-      if (id && isAuthenticated) {
-          await doctorAvailability();
+      async function getDoctor() {
+        if (id) {
           await doctorDetail();
+          await doctorAvailability();
+        }
       }
-    }
-    getDoctor();
-      }, [id]);
-        const url = "http://localhost:3001/doctors/detail";
-        const doctorDetail = async () => {
-            try {  const token = localStorage.getItem("token"); 
-              const response = await fetch(`${url}/${id}`, {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                  "Authorization": `Bearer ${token}`,
-                }, });
+      getDoctor();
+    }, [id]);
 
-              if (!response.ok) throw new Error("Failed to fetch doctor details");
-              const data = await response.json();
-              console.log("Doctors fetched:", data);
-              setDoctorDetail(data);
-            } catch (err) {
-              console.error("Error fetching doctor details:", err);
-            }
-          };
-        const url2= "http://localhost:3001/doctors/doctorAvailability"
-        const doctorAvailability = async () => {
-            try {
-              const token = localStorage.getItem("token"); 
-              const response = await fetch(`${url2}/${id}`, {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                  "Authorization": `Bearer ${token}`, 
-                },});
+    const url = "http://localhost:3001/doctors/detail";
+    const doctorDetail = async () => {
+        try {  const token = localStorage.getItem("token"); 
+          const response = await fetch(`${url}/${id}`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+            }, });
 
-              if (!response.ok)  throw new Error("Failed to fetch doctor availability");
-              const data = await response.json();
-              console.log("Doctors availability:", data);
-              setDoctorAvailability(data);
-              console.log(availability);
-            } catch (err) {
-              console.error("Error fetching doctor availability:", err);
-            }
-          };
+          if (!response.ok) throw new Error("Failed to fetch doctor details");
+          const data = await response.json();
+          console.log("Doctors fetched:", data);
+          setDoctorDetail(data);
+        } catch (err) {
+          console.error("Error fetching doctor details:", err);
+        }
+      };
+    const url2= "http://localhost:3001/doctors/doctorAvailability"
+    const doctorAvailability = async () => {
+        try {
+          const token = localStorage.getItem("token"); 
+          const response = await fetch(`${url2}/${id}`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "Authorization": `Bearer ${token}`, 
+            },});
 
-          const submitReview = async (e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-           const userrating = parseInt(rating);
-            if (isNaN(userrating) || userrating > 5 || userrating < 1) {
-              alert("Rating must be between 1 and 5.");
-              return;
-            }
-            const url = `http://localhost:3001/user/addReview/${id}`;
-            const token = localStorage.getItem("token");
-            const body = {
-              userid: user.id,
-              comment: comment,
-              rating: userrating,
-            };    
-            try {
-              console.log("Sending submit request...");
-              const response = await fetch(url, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                  Authorization: `Bearer ${token}`, // Include token
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(body), });
-              console.log("Response received:", response);
-              if (response.status === 200) {
-                const data = await response.json();
-                console.log("Response data:", data);
-                alert("Review submitted successfully!");
-                setRating("");
-                setComment("");
-              } else if (response.status === 401) {
-                alert("User has no appointment with the doctor.");
-              }else {
-                alert(`Unexpected error: ${response.status}`);
-              }
-            } catch (error) {
-              console.error("Error submitting review:", error);
-              alert("Error submitting review. Please try again later.");
-            }
-          };
-    const handleRating =(e:React.ChangeEvent<HTMLInputElement>)=> setRating(e.target.value)
-    const handleComment=(e:React.ChangeEvent<HTMLTextAreaElement>)=>setComment(e.target.value)
+          if (!response.ok)  throw new Error("Failed to fetch doctor availability");
+          const data = await response.json();
+          console.log("Doctors availability:", data);
+          setDoctorAvailability(data);
+        } catch (err) {
+          console.error("Error fetching doctor availability:", err);
+        }
+      };
 
-    const handleBooking = () :void=> router.push(`/booking/${id}`)
-    const handleReview = (e: React.MouseEvent<HTMLButtonElement>) => {setReview(!review)
-        e.preventDefault()
-     }
-     if(!isMounted) return (<div>Loading...........</div>)
-    return (
+      const submitReview = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+       const userrating = parseInt(rating);
+        if (isNaN(userrating) || userrating > 5 || userrating < 1) {
+          alert("Rating must be between 1 and 5.");
+          return;
+        }
+        const url = `http://localhost:3001/user/addReview/${id}`;
+        const token = localStorage.getItem("token");
+        const body = {
+          userid: user.id,
+          comment: comment,
+          rating: userrating,
+        };    
+        try {
+          console.log("Sending submit request...");
+          const response = await fetch(url, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body), });
+          console.log("Response received:", response);
+          if (response.status === 200) {
+            const data = await response.json();
+            console.log("Response data:", data);
+            alert("Review submitted successfully!");
+            setRating("");
+            setComment("");
+            setReview(false);
+          } else if (response.status === 401) {
+            alert("User has no appointment with the doctor.");
+          }else {
+            alert(`Unexpected error: ${response.status}`);
+          }
+        } catch (error) {
+          console.error("Error submitting review:", error);
+          alert("Error submitting review. Please try again later.");
+        }
+      };
+const handleRating =(e:React.ChangeEvent<HTMLInputElement>)=> setRating(e.target.value)
+const handleComment=(e:React.ChangeEvent<HTMLTextAreaElement>)=>setComment(e.target.value)
 
-           <div key = {doctor?.id}className={styles.doctor_container}>
+const handleBooking = () :void=> router.push(`/booking/${id}`)
+const handleReview = (e: React.MouseEvent<HTMLButtonElement>) => {setReview(!review)
+    e.preventDefault()
+ }
+ if(!doctor) return (<div>Loading...........</div>)
+return (
+        <>
+           <div key = {doctor?.id} className={`${styles.doctor_container} ${review ? styles.blurred : ''}`}>
             <Image src={pic} alt="doctor_image" height={170} width={170}/>
             <h2 className={styles.name}>{doctor?.name}</h2>
             <div className={styles.info}>
@@ -169,8 +168,9 @@ export default function Doctor()
                 onClick={handleReview}
                 >Add Review</button>
             </div>
+           </div>
             {
-                review ? <div className={styles.review}>
+                review && <div className={styles.review}>
                             <form onSubmit={submitReview}>
                                 <p>Give your doctor review </p>
                                 <input type="text"
@@ -192,9 +192,8 @@ export default function Doctor()
                                     <button type="submit" className={styles.reviewBtn}>Submit</button>
                                 </div>
                             </form>
-                        </div> : <div>
-                  </div>
+                        </div>
             }
-        </div>
+        </>
     )
 }

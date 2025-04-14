@@ -8,8 +8,24 @@
     position: relative;
 }
 .date{
+ text-align: center;
+}
+.month_year{
     display: flex;
-    gap:5px;
+    gap: 5px;
+}
+.arrow{
+    cursor: pointer;
+    border-radius: 50%;
+    width: 20px;
+    font-weight: 700;
+    height: 20px;
+    background-color: transparent;
+    color: black;
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .dates,.month{
     display: flex;
@@ -24,12 +40,13 @@
     font-weight: 700;
 }
 .dates{
-    justify-content: flex-start;
+    justify-content: center;
     position: relative;
     gap:10px;
-    overflow-x: scroll;
+    flex-wrap: wrap;
+    /* overflow-x: scroll;
     overflow-y: hidden;
-    scrollbar-color: white  white ;
+    /* scrollbar-color: white  white ; */
     scrollbar-width: thin;
   
 }

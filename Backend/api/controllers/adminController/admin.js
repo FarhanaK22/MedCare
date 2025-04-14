@@ -183,7 +183,7 @@ console.log("user id",typeof(userid))
     users 
     WHERE user_id = $1`,[userid])
 
-  const useremail = getEmail.rows[0].user_id || "farhana30092k1@gmail.com"
+  const useremail = getEmail.rows[0].email || "farhana30092k1@gmail.com"
   const accessToken = await oAuth2Client.getAccessToken()
   const transport = nodemailer.createTransport(
     {

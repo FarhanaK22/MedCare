@@ -29,7 +29,7 @@ interface doctorType {
     gender : string,
 }
 const initialFilter ={
-    rating : "5",
+    rating : "all",
     experience : "all",
     gender : "all",
 }
@@ -53,10 +53,11 @@ const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   };
 const handleSearch = (e : React.MouseEvent<HTMLButtonElement>)=> 
     {e.preventDefault();
-        setFilters((initialFilter)=>( {
-            ...initialFilter,
-            rating:"all" ,
-        }))
+        // setFilters((initialFilter)=>( {
+        //     ...initialFilter,
+        //     rating:"all" ,
+        // }))
+        setFilters(initialFilter)
         setSearch(userinput)
     }
     
@@ -80,6 +81,7 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
         setFilters(initialFilter)
         setUserInput("")
         setSearch("")
+        setPageno(1)
     }
 // ************************FETCH FILTERED DOCTORS ***********************************
     useEffect(()=> {   
@@ -316,13 +318,29 @@ const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>)=>
       </div>
 {/* *************************PAGINATION*************************** */}
       <div className={styles.pagination}>
-        <button onClick={()=>{pageno>1 ? setPageno(pageno-1) : null
-            handleSearch
-        }}>{`<`} Prev</button>
-          <p style={{color:"#8C8C8C"}}>{pageno}</p>
-        <button onClick={()=>{doctors.length/pageno > pageno ? setPageno(pageno+1) : null
-            handleSearch
-        }}>Next {`>`}</button>
+        <button 
+          onClick={()=>{
+            if(pageno>1) {
+              setPageno(pageno-1);
+            }
+          }}
+          disabled={pageno === 1}
+          className={styles.pagination_btn}
+        >
+          {`<`} Prev
+        </button>
+        <p style={{color:"#8C8C8C"}}>{pageno}</p>
+        <button 
+          onClick={()=>{
+            if(doctors.length >= 6) {
+              setPageno(pageno+1);
+            }
+          }}
+          disabled={doctors.length < 6}
+          className={styles.pagination_btn}
+        >
+          Next {`>`}
+        </button>
       </div>  
 
       </div>
