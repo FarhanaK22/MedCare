@@ -1,4 +1,3 @@
-
 const { parse } = require("dotenv");
 const pool = require("../../db/index.js")
 
@@ -6,42 +5,51 @@ const filterDoctors = async (req, res) => {
   const { rating, experience, gender , searchQuery = "", page = 1} = req.query;
 
   try {
-    let query = "SELECT * FROM view_doctor WHERE 1=1";
+    let baseQuery = "FROM view_doctor WHERE 1=1";
     const queryParams = [];
 
     if (rating && rating !== "all") {
       queryParams.push(rating);
-      query += ` AND avgrating  = $${queryParams.length}`;
+      baseQuery += ` AND avgrating  = $${queryParams.length}`;
     }
 
     if (experience && experience !== "all") {
       const [minExp, maxExp] = experience.split("-").map(Number);
       queryParams.push(minExp, maxExp);
-      query += ` AND experience BETWEEN $${queryParams.length - 1} AND $${queryParams.length}`;
+      baseQuery += ` AND experience BETWEEN $${queryParams.length - 1} AND $${queryParams.length}`;
     }
 
     if (gender && gender !== "all") {
       queryParams.push(gender.toLowerCase());
-      query += ` AND LOWER(gender) = $${queryParams.length}`;
+      baseQuery += ` AND LOWER(gender) = $${queryParams.length}`;
     }
     if (searchQuery) {
       queryParams.push(`%${searchQuery.toLowerCase()}%`);
-      query += ` AND (LOWER(name) LIKE $${queryParams.length} 
+      baseQuery += ` AND (LOWER(name) LIKE $${queryParams.length} 
       OR LOWER(speciality) LIKE $${queryParams.length}
       OR LOWER(disease_name) LIKE $${queryParams.length})
       `;
     }
-    query += ` ORDER BY avgrating DESC`;
-    // Pagination logic
+
+    // Get total count
+    const countQuery = `SELECT COUNT(*) ${baseQuery}`;
+    const countResult = await pool.query(countQuery, queryParams);
+    const totalCount = parseInt(countResult.rows[0].count);
+    console.log("total count",totalCount);
+
+    // Get paginated results
     const limit = 6;
     const offset = (page - 1) * limit;
-    query += ` LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
+    const dataQuery = `SELECT * ${baseQuery} ORDER BY avgrating DESC LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
     queryParams.push(limit, offset);
 
-    const result = await pool.query(query, queryParams);
-    console.log("Query Result:", result.rows);
-    const doctors = result.rows
-    res.status(200).json(doctors);
+    const result = await pool.query(dataQuery, queryParams);
+    const doctors = result.rows;
+
+    res.status(200).json({
+      doctors,
+      totalCount
+    });
   } catch (err) {
     console.error("Error fetching doctors:", err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -126,7 +134,7 @@ const doctorSlots = async(req,res) =>
     const query2 = `SELECT 
         a.slot_id 
         FROM appointments a
-        WHERE appointment_date = $1 AND status = 'approved'`
+        WHERE appointment_date = $1 AND status in ('approved','pending')`
     const unavailableslots = await pool.query(query2, [appointment_date]);
     const unavailableIds = unavailableslots.rows.map(slot => slot.slot_id);
     const availableSlots = slots.rows.filter(slot => !unavailableIds.includes(slot.slot_id));
