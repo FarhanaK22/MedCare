@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const pool = require("../db/index.js")
-const {register ,addReview ,bookSlot,logout} = require ("../controllers/userController/user.js")
+const {register ,addReview ,bookSlot,logout,patient,getPatient} = require ("../controllers/userController/user.js")
 const passport_local = require("../../passport-local.js")
 const passport_google = require("../../passport-google.js")
 const jwt = require("jsonwebtoken")
@@ -33,6 +33,8 @@ router.post('/login', (req, res, next) => {
 router.post('/logout',logout)
 router.post('/addReview/:id', passport.verifyToken, addReview);
 router.post('/bookSlot/:id', passport.verifyToken, bookSlot);
+router.post('/patient',passport.verifyToken,patient)
+router.get('/getPatient',passport.verifyToken,getPatient)
 
 router.get('/checktoken',(req, res) => {
     console.log("Cookies:", req.cookies);

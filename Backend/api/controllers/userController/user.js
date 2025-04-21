@@ -107,5 +107,62 @@ const bookSlot = async(req,res)=>
       })
      }
     }
+    const getPatient = async (req, res) => {
+      try {
+        const { userId, name } = req.query;
+        console.log(userId, name);
+    
+        const parsedUserId = parseInt(userId);
+    
+        const result = await pool.query(
+          "SELECT * FROM patients WHERE user_id = $1 AND LOWER(name) LIKE LOWER($2 || '%')",
+          [parsedUserId, name]
+        );
+    
+        console.log(result.rows[0]);
+        console.log("inside patient check");
+    
+        if (result.rows.length > 0) {
+          return res.status(200).json({message: "Patient exists"})
+        } else {
+          return res.status(404).json({ message: "Patient not found" });
+        }
+      } catch (error) {
+        console.error("Error fetching patient:", error);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+    };
+    
+    const patient = async(req,res) => {
+      const { name, age, phone, disease_history, address, userId } = req.body;
 
-module.exports = { addReview ,bookSlot ,register,logout}
+     console.log(name, age, phone, disease_history, address, userId);
+      try {
+          const checkPatient = await pool.query(
+              "SELECT * FROM patients WHERE user_id = $1 AND LOWER(name) = LOWER($2)",
+              [userId, name]
+          );
+  
+          if (checkPatient.rows.length > 0) {
+              return res.status(400).json({
+                  error: "Patient profile already exists"
+              });
+          }
+          const result = await pool.query(
+              `INSERT INTO patients (name, age, phone, disease_history, address, user_id)
+               VALUES ($1, $2, $3, $4, $5, $6)
+               RETURNING *`,
+              [name, age, phone, disease_history, address, userId]
+          );
+  
+          return res.status(200).json({
+              message: "Patient profile added successfully",
+              patient: result.rows[0]
+          });
+  
+      } catch (error) {
+          console.error("Error adding patient profile:", error);
+          return res.status(500).json({ error: "Internal server error" });
+      }
+    };
+module.exports = { addReview ,bookSlot ,register,logout ,patient,getPatient}

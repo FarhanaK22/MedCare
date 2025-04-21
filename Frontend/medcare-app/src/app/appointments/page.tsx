@@ -70,14 +70,14 @@ const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
     }
 
     setIsSearching(true);
-    setPageno(1);
-    setFilters(initialFilter);
+    // setPageno(1);
+    // setFilters(initialFilter);
     setSearch(userinput);
     setShowSuggestions(false);
 
     searchThrottleTimer.current = setTimeout(() => {
         setIsSearching(false);
-    }, 2000);
+    }, 3000);
 };
 
 useEffect(() => {
@@ -126,7 +126,7 @@ const fetchDoctors = async () => {
     const doctors = response.data.doctors;
     setDoctors(doctors);
     setCount(tcount);
-    setUserInput("");
+    // setUserInput("");
     
   } catch (err) {
     console.error("Error fetching doctors using filter:", err);
